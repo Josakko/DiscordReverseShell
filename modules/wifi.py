@@ -5,9 +5,9 @@ import socket
 
 class WifiPasswords:
     def __init__(self):
-        self.password_file = open("wifi.txt", "w", encoding="utf-8")
-        self.password_file.write(f"Password List for: {socket.gethostname()}, {socket.gethostbyname(socket.gethostname())}: \n")
-        self.password_file.close()
+        #self.password_file = open("wifi.txt", "w", encoding="utf-8")
+        #self.password_file.write(f"Password List for: {socket.gethostname()}, {socket.gethostbyname(socket.gethostname())}: \n")
+        #self.password_file.close()
 
         self.files = []
         self.ssid = []
