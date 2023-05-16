@@ -1,6 +1,6 @@
 import subprocess
 import os
-import socket
+#import socket
 
 
 class WifiPasswords:
