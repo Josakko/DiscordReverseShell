@@ -67,8 +67,9 @@ def network():
     private_ip = socket.gethostbyname(socket.getfqdn())
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
     country, region, city, zip_code, isp = location(public_ip)
-    
-    return f"\nPublic IP: {public_ip}\nLocal IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    try:
+        return f"\nPublic IP: {public_ip}\nLocal IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
+    except: return "Unknown"
 
 
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
