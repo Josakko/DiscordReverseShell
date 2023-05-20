@@ -5,12 +5,22 @@ Virus in style of reverse shell whit discord as server
 
 ## Usage
 
-1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/).
+1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/) and UPX [here](https://upx.github.io/).
 
 2. Setup environment, download git to clone the repo automaticly:
 
        curl -sSfO "https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/setup.bat" && setup.bat
 
+3. Go to the [discord developer portal](https://discord.com/developers/applications), sign in, and click `New Application`. Choose any name, click accept and create. Next go to the `Bot` section and click `Add Bot`. Click on `Reset Token` and click on `Copy` button.
+       
+- **IMPORTANT:** DO NOT share copyed token! Others can use this to control your bot!
+       
+ 4. Go to [discord](https://discord.com/channels/@me), and create new server. Now `Right click` on that server and click on `Copy ID` (if you don't see that option navigate to `user settings` then `Advanced` and enable `Developer Mode`, now you can try to copy Id again).
+
+5. Run `Builder.exe` that you downloaded in first step and make sure that you have `main.py`, `modules` folder etc. in `src` folder relative to the `Builder.exe`
+
+6. Enter all required info that you will be promted to enter.
+       
 ## Examples 
 
 <p align="center">
