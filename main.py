@@ -490,11 +490,3 @@ except:
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
-#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-
-
-
-#C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
-
-
