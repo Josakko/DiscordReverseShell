@@ -4,21 +4,20 @@ Virus in style of reverse shell whit discord as server
 ## Examples 
 
 <p align="center">
-  <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img1.png?raw=true" width="600px">
+  <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/img0.png?raw=true" width="500px">
 </p>
 
 
 <p align="center">
-  <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img2.png?raw=true" width="600px">
+  <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/img2.png?raw=true" width="500px">
 </p>
 
 <p align="center">
-  <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/img3.png?raw=true" width="600px">
+  <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/img1.png?raw=true" width="500px">
 </p>
 
-<p align="center">
-  <img alt="issue" src="https://github.com/Josakko/MultiStealerVirus/blob/main/img/im3.png?raw=true" width="600px">
-</p>
+
+
 
 ## Usage
 
