@@ -1,5 +1,7 @@
 TOKEN = "" #<= TOKEN
 GUILD_ID = "" #<= SERVER ID
-ERROR = False
-DEFENDER = False
 INTERVAL = 300
+ERROR = False
+ANTIDEBUG = False
+DEFENDER = True
+MOVE = True
