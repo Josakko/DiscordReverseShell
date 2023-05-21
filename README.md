@@ -28,31 +28,32 @@ Virus in style of reverse shell whit discord as server
        
 Full list of commands for malware with description:
 
+       
+        help - Help command
+        ping - Ping command
+        sys - System information
+        clipboard - Return clipboard content
+        processes - Get all running processes
+        cd - Change directory
+        ls - List directory
+        cwd - Get current working directory
+        download <file> - Download file
+        upload <link> - Upload file
+        cmd <command> - Execute cmd command
+        pw <command> - Execute powershell command
+        run <file> - Run an file
+        wifi - Return wifi passwords
+        screenshot - Take a screenshot
+        webcam - Get image of webcam
+        bluescreen - Blue screen victim
+        startup - Add to startup
+        browser - Get browser data
+        wallet - Get wallet information
+        keylogger - Enable keylogger -- WIP -- !cant be stoped, only thru reboot or shutdown!
+        freeze <1/0> - Freeze all inputs from keyboard and mouse
+        !quit - Exit session without deleting all the data
+        !exit - Exit session and delete all data
 
-    "help - Help command",
-    "ping - Ping command",
-    "sys - System information",
-    "clipboard - Return clipboard content",
-    "processes - Get all running processes",
-    "cd - Change directory",
-    "ls - List directory",
-    "cwd - Get current working directory",
-    "download <file> - Download file",
-    "upload <link> - Upload file",
-    "cmd <command> - Execute cmd command",
-    "pw <command> - Execute powershell command",
-    "run <file> - Run an file",
-    "wifi - Return wifi passwords",
-    "screenshot - Take a screenshot",
-    "webcam - Get image of webcam",
-    "bluescreen - Blue screen victim",
-    "startup - Add to startup",
-    "browser - Get browser data",
-    "wallet - Get wallet information",
-    "keylogger - Enable keylogger -- WIP -- !cant be stoped, only thru reboot or shutdown!",
-    "freeze <1/0> - Freeze all inputs from keyboard and mouse",
-    "!quit - Exit session without deleting all the data",
-    "!exit - Exit session and delete all data"
 
 ## Examples 
 
