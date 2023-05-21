@@ -21,10 +21,39 @@ Virus in style of reverse shell whit discord as server
 
 6. Enter all required info that you will be promted to enter also make sure to have UPX installed or if you dont want to use it just select `y` for editing building options and disable usage of UPX there
        
-7. Now you will have built exe in folder `src\dist\main.exe` witch is relative to the `Builder.exe`.
+7. Now you will have built exe in folder `src\dist\main.exe` witch is relative to the `Builder.exe` and also dont forget to invite the discord bot to the server that you just created!
+
+8. When exe i ran new channel will be created in the discord server, once malware is ran you will be able to run command `help` to get full list of commands
        
-8. Now
        
+Full list of commands for malware with description:
+
+
+    "help - Help command",
+    "ping - Ping command",
+    "sys - System information",
+    "clipboard - Return clipboard content",
+    "processes - Get all running processes",
+    "cd - Change directory",
+    "ls - List directory",
+    "cwd - Get current working directory",
+    "download <file> - Download file",
+    "upload <link> - Upload file",
+    "cmd <command> - Execute cmd command",
+    "pw <command> - Execute powershell command",
+    "run <file> - Run an file",
+    "wifi - Return wifi passwords",
+    "screenshot - Take a screenshot",
+    "webcam - Get image of webcam",
+    "bluescreen - Blue screen victim",
+    "startup - Add to startup",
+    "browser - Get browser data",
+    "wallet - Get wallet information",
+    "keylogger - Enable keylogger -- WIP -- !cant be stoped, only thru reboot or shutdown!",
+    "freeze <1/0> - Freeze all inputs from keyboard and mouse",
+    "!quit - Exit session without deleting all the data",
+    "!exit - Exit session and delete all data"
+
 ## Examples 
 
 <p align="center">
