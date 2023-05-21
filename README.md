@@ -5,7 +5,7 @@ Virus in style of reverse shell whit discord as server
 
 ## Usage
 
-1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/) and UPX [here](https://upx.github.io/).
+1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/) and UPX [here](https://upx.github.io/) and put it into `C:\UPX`.
 
 2. Setup environment, download git to clone the repo automaticly:
 
@@ -19,7 +19,11 @@ Virus in style of reverse shell whit discord as server
 
 5. Run `Builder.exe` that you downloaded in first step and make sure that you have `main.py`, `modules` folder etc. in `src` folder relative to the `Builder.exe`
 
-6. Enter all required info that you will be promted to enter.
+6. Enter all required info that you will be promted to enter also make sure to have UPX installed or if you dont want to use it just select `y` for editing building options and disable usage of UPX there
+       
+7. Now you will have built exe in folder `src\dist\main.exe` witch is relative to the `Builder.exe`.
+       
+8. Now
        
 ## Examples 
 
