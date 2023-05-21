@@ -1,5 +1,5 @@
 # DiscordReverseShell
-Virus in style of reverse shell whit discord as server
+Malware in style of reverse shell whit discord as server
 
 <p align="center">DiscordReverseShell v1.0.0<p>
 
