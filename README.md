@@ -1,4 +1,13 @@
-<h1 align="center">Discord Reverse Shell<h1>
+<!-- <h1 align="center">Discord Reverse Shell<h1> -->
+
+<img src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/banner.png?raw=true" alt="Discord Reverse Shell">
+
+<p align="center">
+  <img src="https://img.shields.io/github/languages/top/Josakko/DiscordReverseShell" </a>
+  <img src="https://img.shields.io/github/last-commit/Josakko/DiscordReverseShell" </a>
+  <img src="https://img.shields.io/github/stars/Josakko/DiscordReverseShell" </a>
+  <img src="https://img.shields.io/github/forks/Josakko/DiscordReverseShell" </a>
+</p>
 
 <h4 align="center">
     <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
@@ -46,7 +55,7 @@
     - Exodus and Electrum
 
 - Startup
-    - Place shortcut to malware in `C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
+    - Creates shortcut to malware in `C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
 
 - Other
     - Move and run malware after running to `C:\Users\USERNAME\AppData\Roaming\MicrosoftWindows\System`
