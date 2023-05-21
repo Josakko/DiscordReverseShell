@@ -1,8 +1,11 @@
+
 # DiscordReverseShell
 Malware in style of reverse shell whit discord as server
 
-<p align="center">DiscordReverseShell v1.0.0<p>
-
+<p align="center">
+    <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
+<span style="color: #fff; font-weight: bold;">v1.0.0</span>
+       
 ## Usage
 
 1. Download builder [here](https://github.com/Josakko/MultiStealerVirus/releases/) and UPX [here](https://upx.github.io/) and put it into `C:\UPX`.
