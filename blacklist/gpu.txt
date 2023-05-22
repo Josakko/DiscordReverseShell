@@ -43,7 +43,7 @@ MTSUP2DX
 MYNP2R7E
 NVIDIA GeForce 840M
 NVIDIA GeForce 9400M
-#### NVIDIA GeForce 9500 GT (Microsoft Corporation - WDDM v1.1)
+NVIDIA GeForce 9500 GT (Microsoft Corporation - WDDM v1.1)
 O597EOTS
 OEFUG1_W
 OOUT3ENP
