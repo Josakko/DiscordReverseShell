@@ -72,10 +72,10 @@ def network():
     try:
         public_ip = requests.get("https://api.ipify.org").text
     except:
-        pass
+        public_ip = "Unknown"
     private_ip = socket.gethostbyname(socket.getfqdn())
     mac = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
-    country, region, city, zip_code, isp = location(public_ip)
+    country, region, city, zip_code, isp = location(public_ip) #if public_ip != "Unknown":  country, region, city, zip_code, isp = location(public_ip)
     try:
         return f"\nPublic IP: {public_ip}\nLocal IP: {private_ip}\nMAC Address: {mac}\nCountry: {country}\nRegion: {region}\nCity: {city}, {zip_code}\nISP: {isp}"
     except: return "Unknown"
