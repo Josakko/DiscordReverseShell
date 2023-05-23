@@ -1,3 +1,4 @@
+discord.py
 discord
 requests
 pynput
@@ -12,3 +13,5 @@ win32com
 pyinstaller
 pyminifier
 colorama
+keyboard
+wmi
