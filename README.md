@@ -117,6 +117,10 @@ Full list of commands for malware with description:
 ## Examples 
 
 <p align="center">
+  <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/builder.png?raw=true" width="500px">
+</p>
+  
+<p align="center">
   <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/img0.png?raw=true" width="500px">
 </p>
 
