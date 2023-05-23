@@ -127,6 +127,13 @@ Full list of commands for malware with description:
   <img alt="issue" src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/img1.png?raw=true" width="500px">
 </p>
 
+## License
+
+This project is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Josakko/DiscordReverseShell/blob/main/LICENSE) file for details
+
+・Selling this **Free** stealer is forbidden
+・If you make a copy of this/or fork it, it **must** be open-source and have credits linking to this repo
+  
 ## Need Help?
 
 If you need help contact me on my [discord server](https://discord.gg/xgET5epJE6) or create [issue](https://github.com/Josakko/DiscordReverseShell/issues).
