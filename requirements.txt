@@ -1,11 +1,12 @@
-discord.py
 discord
+discord.py
 requests
 pynput
 Crypto.Cipher
 psutil
 pyperclip
 pillow
+rich
 opencv-python
 pynput
 pywin32
@@ -13,5 +14,4 @@ win32com
 pyinstaller
 pyminifier
 colorama
-keyboard
-wmi
+requests
