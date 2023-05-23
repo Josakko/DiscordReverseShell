@@ -58,6 +58,7 @@
     - Creates shortcut to malware in `C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
 
 - Other
+    - Anti Debug
     - Move and run malware after running to `C:\Users\USERNAME\AppData\Roaming\MicrosoftWindows\System`
     - Defender disabler
     - Fake error
