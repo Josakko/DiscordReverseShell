@@ -1,7 +1,9 @@
 <!-- <h1 align="center">Discord Reverse Shell<h1> -->
 
-<img src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/banner.png?raw=true" alt="Discord Reverse Shell">
-
+<p align="center">
+  <img src="https://github.com/Josakko/DiscordReverseShell/blob/main/img/banner.png?raw=true" alt="Discord Reverse Shell">
+<p>
+  
 <p align="center">
   <img src="https://img.shields.io/github/languages/top/Josakko/DiscordReverseShell" </a>
   <img src="https://img.shields.io/github/last-commit/Josakko/DiscordReverseShell" </a>
