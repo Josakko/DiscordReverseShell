@@ -74,7 +74,7 @@ def build(path, icon, upx=True, obf=True):
         time.sleep(3)
     except:
         progress.stop()
-        print(Fore.RED +"[-] Please make sure you have pyinstaller, pyarmor and UPX installed under C:/UPX!"+ Style.RESET_ALL)
+        print(Fore.RED +"[-] Please make sure you have pyinstaller, pyminifier and UPX installed under C:/UPX!"+ Style.RESET_ALL)
         time.sleep(3)
         sys.exit(1)
     
