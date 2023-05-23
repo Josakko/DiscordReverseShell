@@ -10,3 +10,5 @@ pynput
 pywin32
 win32com
 pyinstaller
+pyminifier
+colorama
