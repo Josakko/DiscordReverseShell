@@ -130,9 +130,9 @@ Full list of commands for malware with description:
 ## License
 
 This project is licensed under the GNU General Public License v3.0 License - see the [LICENSE](https://github.com/Josakko/DiscordReverseShell/blob/main/LICENSE) file for details
-
-・Selling this **Free** stealer is forbidden
-・If you make a copy of this/or fork it, it **must** be open-source and have credits linking to this repo
+  
+- Selling this **Free** stealer is forbidden
+- If you make a copy of this/or fork it, it **must** be open-source and have credits linking to this repo
   
 ## Need Help?
 
