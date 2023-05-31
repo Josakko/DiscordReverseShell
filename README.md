@@ -113,6 +113,7 @@ Full list of commands for malware with description:
     wallet - Get wallet information
     keylogger - Enable keylogger -- WIP -- !cant be stopped, only thru reboot or shutdown!
     freeze <1/0> - Freeze all inputs from keyboard and mouse
+    clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file
     !quit - Exit session without deleting all the data
     !exit - Exit session and delete all data
 
