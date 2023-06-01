@@ -114,6 +114,7 @@ Full list of commands for malware with description:
     keylogger - Enable keylogger -- WIP -- !cant be stopped, only thru reboot or shutdown!
     freeze <1/0> - Freeze all inputs from keyboard and mouse
     clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file
+    regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value
     !quit - Exit session without deleting all the data
     !exit - Exit session and delete all data
 
