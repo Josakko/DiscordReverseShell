@@ -32,6 +32,7 @@
 - Control
     - Powershell commands
     - CMD commands
+    - Registry editor
     - Freeze inputs
     - Bluescreen victim
 
@@ -62,6 +63,7 @@
 - Other
     - Anti Debug
     - Move and run malware after running to `C:\Users\USERNAME\AppData\Roaming\MicrosoftWindows\System`
+    - Clone its self
     - Defender disabler
     - Fake error
     - Keylogger -- Still WIP, works but cant be stopped, only thru reboot or shutdown
