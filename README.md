@@ -13,7 +13,7 @@
 
 <h4 align="center">
     <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
-    <span style="color: #fff; font-weight: normal;">v4.2.0</span>
+    <span style="color: #fff; font-weight: normal;">v4.3.0</span>
 <h4>
 
 ## Features
