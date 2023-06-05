@@ -109,6 +109,7 @@ Full list of commands for malware with description:
     cmd <command> - Execute cmd command
     pw <command> - Execute powershell command
     run <file> - Run an file
+    zip <path> - Zip and file or folder
     wifi - Return wifi passwords
     screenshot - Take a screenshot
     webcam - Get image of webcam
