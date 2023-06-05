@@ -42,6 +42,7 @@
     - Download
     - Upload
     - Run files independently
+    - Zip files and folders
 
 - Browser data
     - Cookies
