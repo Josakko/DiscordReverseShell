@@ -69,6 +69,7 @@
     - Clone its self
     - Defender disabler
     - Fake error
+    - Self destruct and all 'evidence'
     - Keylogger -- Still WIP, works but cant be stopped, only thru reboot or shutdown
 
 
