@@ -13,7 +13,7 @@
 
 <h4 align="center">
     <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
-    <span style="color: #fff; font-weight: normal;">v4.3.0</span>
+    <span style="color: #fff; font-weight: normal;">v4.4.0</span>
 <h4>
 
 ## Features
@@ -123,6 +123,7 @@ Full list of commands for malware with description:
     regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value
     !quit - Exit session without deleting all the data
     !exit - Exit session and delete all data
+    !selfdestruct - Remove the malware from the victims machine along whit all 'evidence'
 
 ## Examples 
 
