@@ -65,6 +65,10 @@
     - Live microphone
     - 24/7 recordings 
   
+- Ransomware
+    - Encrypt file
+    - Decrypt file
+  
 - Other
     - Validating token
     - Checking internet
