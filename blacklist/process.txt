@@ -3,7 +3,7 @@ httpdebuggerui.exe
 wireshark.exe
 fiddler.exe
 regedit.exe
-cmd.exe
+##cmd.exe
 taskmgr.exe
 vboxservice.exe
 df5serv.exe
