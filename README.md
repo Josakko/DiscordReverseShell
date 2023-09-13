@@ -13,7 +13,7 @@
 
 <h4 align="center">
     <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
-    <span style="color: #fff; font-weight: normal;">v6.2.0</span>
+    <span style="color: #fff; font-weight: normal;">v7.0.0</span>
 <h4>
 
 ## Features
@@ -127,6 +127,7 @@ Full list of commands for malware with description:
     browser - Get browser data
     wallet - Get wallet information
     keylogger - Enable keylogger
+    dos 1 <ip>:<port> - DoS an IP or: dos 2 <domain>:<port>
     mic - Record 120 seconds recordings of microphone and send them
     join - Joins or leaves voice channel where it streams live microphone
     freeze <1/0> - Freeze all inputs from keyboard and mouse
