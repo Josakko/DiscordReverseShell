@@ -13,7 +13,7 @@
 
 <h4 align="center">
     <span style="color: #fff; font-weight: bold;">DiscordReverseShell</span>
-    <span style="color: #fff; font-weight: normal;">v7.0.0</span>
+    <span style="color: #fff; font-weight: normal;">v7.1.0</span>
 <h4>
 
 ## Features
@@ -43,6 +43,7 @@
     - Upload
     - Run files independently
     - Zip files and folders
+    - FS tree
 
 - Browser data
     - Cookies
@@ -79,6 +80,7 @@
     - Fake error
     - Self destruct and all 'evidence'
     - Keylogger
+    - Execution delay
 
 
 ## Usage
