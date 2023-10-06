@@ -55,6 +55,7 @@
     - Downloads
     - History
     - Support for any chromium based browser
+    - Support for any Firefox fork
   
 - Crypto Wallets
     - Exodus and Electrum
