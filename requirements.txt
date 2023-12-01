@@ -2,7 +2,7 @@ discord
 discord.py
 requests
 pynput
-Crypto.Cipher
+Crypto
 psutil
 pyperclip
 pillow
