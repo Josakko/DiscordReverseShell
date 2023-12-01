@@ -6,12 +6,15 @@ Crypto.Cipher
 psutil
 pyperclip
 pillow
-rich
 opencv-python
 pynput
 pywin32
-win32com
-pyinstaller
-pyminifier
-colorama
 requests
+
+# building deps
+nuitka
+pyminifier
+
+# builder deps
+rich
+colorama 
