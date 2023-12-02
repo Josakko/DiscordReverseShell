@@ -162,10 +162,13 @@ cython_debug/
 
 # dirs
 tests/
+test/
 dist/
 build/
-builder/build/
 
 # files
-Builder.exe
+test.py
+builder.exe
 main.exe
+
+req.txt

