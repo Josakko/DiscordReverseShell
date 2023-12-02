@@ -8,5 +8,3 @@ DEFENDER = False
 MOVE = False
 EXEC_DELAY = False
 DELAY = 300
-
-

@@ -1210,11 +1210,3 @@ else: Startup(sys.argv[0])
 
 #f"Get-LocalUser -Name '{username}' | Reset-LocalUserPassword -NewPassword (ConvertTo-SecureString -String '{password}' -AsPlainText -Force)"
 
-
-
-# TODO
-# discord injection
-# uac bypass
-# use nuitka instead of pyinstaller
-# TODO
-
