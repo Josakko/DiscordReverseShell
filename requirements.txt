@@ -13,10 +13,10 @@ requests
 
 # building deps
 nuitka
+python-minifier
 #pyminifier3 - depricated
 
 
 # builder deps
 rich
 colorama 
-python-minifier
