@@ -2,7 +2,7 @@ discord
 discord.py
 requests
 pynput
-Crypto
+Crypto.Cipher
 psutil
 pyperclip
 pillow
@@ -13,8 +13,10 @@ requests
 
 # building deps
 nuitka
-pyminifier
+#pyminifier3 - depricated
+
 
 # builder deps
 rich
 colorama 
+python-minifier
